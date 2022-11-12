@@ -1,5 +1,9 @@
+import { useRoutes } from 'react-router-dom';
+import routes from './routes';
+
 const App = () => {
-  return <div className="App">Starting Project 🚀</div>;
+  const content = useRoutes(routes);
+  return content;
 };
 
 export default App;

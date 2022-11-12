@@ -1,0 +1,33 @@
+* {
+  box-sizing: 'border-box';
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: baseline;
+}
+
+html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  line-height: 1;
+  -webkit-font-smoothing: 'antialiased';
+  -moz-osx-font-smoothing: 'grayscale';
+}
+
+ol, ul {
+	list-style: none;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+#root {
+  min-height: 100vh;
+  min-width: 100%;
+  background-color: #F4F5F7;
+}
