@@ -137,7 +137,7 @@ const customBaseOptions: ThemeOptions = {
     subtitle2: {
       // Utilizar en Typography que sean títulos de las Card pequeñas
       fontWeight: 600,
-      fontSize: '0.875rem',
+      fontSize: '0.9rem',
       letterSpacing: LetterSpacing.xs,
     },
     body1: {

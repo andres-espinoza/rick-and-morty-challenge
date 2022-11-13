@@ -63,5 +63,6 @@ module.exports = {
     'no-console': 0,
     'no-debugger': 0,
     'class-methods-use-this': 0,
+    'no-param-reassign': 0,
   },
 };
