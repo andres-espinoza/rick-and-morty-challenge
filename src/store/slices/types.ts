@@ -1,5 +1,11 @@
-import { GetCharactersPage } from '../../services/characters/__generated__/GetCharactersPage';
+import { GetCharactersBasicData_characters_results } from '../../services/characters/__generated__/GetCharactersBasicData';
 
-export interface ICharactersSlice {
-  charactersPage: GetCharactersPage['characters'];
+interface CharacterShape extends GetCharactersBasicData_characters_results {
+  favorite?: boolean;
+}
+
+export interface CharacterSliceShape {
+  charactersBasicData: (CharacterShape | null)[] | null;
+  loading: boolean;
+  error: string | null;
 }
