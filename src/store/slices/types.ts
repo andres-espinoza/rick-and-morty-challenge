@@ -1,6 +1,7 @@
 import { GetCharactersBasicData_characters_results } from '../../services/characters/__generated__/GetCharactersBasicData';
 
-interface CharacterShape extends GetCharactersBasicData_characters_results {
+export interface CharacterShape
+  extends GetCharactersBasicData_characters_results {
   favorite?: boolean;
 }
 

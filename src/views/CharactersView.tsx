@@ -1,35 +1,58 @@
-import { Box, Grid } from '@mui/material';
-import { useCallback, useEffect } from 'react';
+import { Box, Grid, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import CustomCard from '../components/CustomCard';
-import { useAppDispatch, useAppSelector } from '../store';
-import { getCharactersBasicData } from '../store/slices/characterSlice';
+import CustomPagination from '../components/Pagination';
+import useQueryParams from '../hooks/useQueryParams';
+import { useAppSelector } from '../store';
+import { CharacterSliceShape } from '../store/slices/types';
 
 const CharactersView = () => {
-  const dispatch = useAppDispatch();
   const { charactersBasicData, loading } = useAppSelector(
     (state) => state.characters
   );
 
-  const initCharacters = useCallback(async () => {
-    await dispatch(getCharactersBasicData());
-  }, [dispatch]);
+  const queryParams = useQueryParams();
+  const currentPage = Number(queryParams.get('page')) || 1;
+
+  const [charactersPage, setCharactersPage] =
+    useState<CharacterSliceShape['charactersBasicData']>(null);
+
+  const paginateData = (
+    page: number,
+    data: CharacterSliceShape['charactersBasicData'],
+    amountPerPage = 24
+  ) => {
+    if (!data || data.length < 1) return [];
+    const from = amountPerPage * page - amountPerPage;
+    const to = amountPerPage * page;
+    return data.slice(from, to);
+  };
 
   useEffect(() => {
-    initCharacters().catch((err) => console.log(err));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (charactersBasicData) {
+      setCharactersPage(paginateData(currentPage, charactersBasicData));
+    }
+  }, [currentPage, charactersBasicData]);
   return (
     <>
-      <div>Characters View</div>
+      <Typography
+        variant="h2"
+        width="100%"
+        textAlign="center"
+      >
+        {' '}
+        Characters View
+      </Typography>
       {loading ? <h1>...Loading</h1> : null}
       <Box sx={{ width: '100%' }}>
         <Grid
           container
           rowSpacing={4}
+          marginTop={4}
           // columnSpacing={{ xs: 1, sm: 2, md: 3 }}
         >
-          {!loading && charactersBasicData && charactersBasicData.length > 0
-            ? charactersBasicData.map((character) => (
+          {!loading && charactersPage && charactersPage.length > 0
+            ? charactersPage.map((character) => (
                 <Grid
                   item
                   xs={12}
@@ -46,11 +69,20 @@ const CharactersView = () => {
                     name={character?.name || 'broken'}
                     id={character?.id || 'broken'}
                     imageSource={character?.image || 'broken'}
+                    favorite={
+                      character?.favorite === undefined
+                        ? false
+                        : character.favorite
+                    }
                   />
                 </Grid>
               ))
             : null}
         </Grid>
+        <CustomPagination
+          currentPage={currentPage}
+          // handleChange={handlePaginationChange}
+        />
       </Box>
     </>
   );

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { CharacterSliceShape } from './types';
+import { CharacterShape, CharacterSliceShape } from './types';
 import CharactersService from '../../services/characters/index';
 import { GetCharactersBasicData_characters } from '../../services/characters/__generated__/GetCharactersBasicData';
 
@@ -23,7 +23,24 @@ export const getCharactersBasicData = createAsyncThunk<
 const charactersSlice = createSlice({
   name: 'characters',
   initialState,
-  reducers: {},
+  reducers: {
+    setFavoriteCharacter: (
+      { charactersBasicData },
+      {
+        payload: { id, favorite },
+      }: { payload: { id: string; favorite: boolean } }
+    ) => {
+      if (charactersBasicData && charactersBasicData.length > 0) {
+        const characterIndex = charactersBasicData.findIndex(
+          (character) => character?.id === id
+        );
+        if (characterIndex > -1) {
+          (charactersBasicData[characterIndex] as CharacterShape).favorite =
+            favorite;
+        }
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getCharactersBasicData.pending, (state) => {
@@ -40,4 +57,5 @@ const charactersSlice = createSlice({
   },
 });
 
+export const { setFavoriteCharacter } = charactersSlice.actions;
 export default charactersSlice.reducer;

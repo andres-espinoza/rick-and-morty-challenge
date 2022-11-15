@@ -15,6 +15,7 @@ const Loadable = (Component: ElementType) => (props: any) =>
 const CharactersView = Loadable(lazy(() => import('../views/CharactersView')));
 const EpisodesView = Loadable(lazy(() => import('../views/EpisodesView')));
 const FavoritesView = Loadable(lazy(() => import('../views/FavoritesView')));
+const Home = Loadable(lazy(() => import('../views/Home')));
 
 const NotFound = Loadable(lazy(() => import('../views/NotFound')));
 
@@ -22,6 +23,10 @@ const routes: RouteObject[] = [
   {
     element: <MainContainer />,
     children: [
+      {
+        path: '/',
+        element: <Home />,
+      },
       {
         path: 'characters',
         element: <CharactersView />,
