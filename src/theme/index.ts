@@ -34,6 +34,9 @@ const customBaseOptions: ThemeOptions = {
           borderRadius: BorderRadius.Card,
           overflow: 'hidden',
           boxShadow: ShadowsEnum.Main,
+          ':hover': {
+            boxShadow: ShadowsEnum.Hover,
+          },
         },
       },
     },
