@@ -11,16 +11,20 @@ import {
 import { useAppDispatch } from '../store';
 import { setFavoriteCharacter } from '../store/slices/characterSlice';
 import { OutlinedFavoriteIcon, SolidFavoriteIcon } from './icons';
-// import { CSSProperties } from 'react';
 
-export interface EmployeeCardProps {
+export interface CharacterCardProps {
   name: string;
   imageSource: string;
   id: string;
   favorite: boolean;
 }
 
-const CustomCard = ({ name, imageSource, id, favorite }: EmployeeCardProps) => {
+const CharacterCard = ({
+  name,
+  imageSource,
+  id,
+  favorite,
+}: CharacterCardProps) => {
   const { palette } = useTheme();
   const dispatch = useAppDispatch();
   const handleClick = () => {
@@ -31,19 +35,15 @@ const CustomCard = ({ name, imageSource, id, favorite }: EmployeeCardProps) => {
       sx={{
         overflow: 'hidden',
         padding: '0px',
-        boxShadow: 1,
-        ':hover': {
-          boxShadow: 2,
-        },
-        maxWidth: '300px',
-        width: { xs: '200px', sm: '180px', md: '185px', lg: '190px' },
+        maxWidth: '250px',
+        width: { xs: '270px', sm: '180px', md: '185px', lg: '190px' },
         height: '100%',
       }}
     >
       <CardContent
         sx={{
           display: 'flex',
-          flexDirection: 'column',
+          flexDirection: { sx: 'row', sm: 'column' },
           justifyContent: 'center',
           alignItems: 'center',
           heigth: 'auto',
@@ -78,7 +78,10 @@ const CustomCard = ({ name, imageSource, id, favorite }: EmployeeCardProps) => {
               <Box
                 sx={{
                   position: 'absolute',
-                  bottom: '-20px',
+                  bottom: {
+                    xs: '5px',
+                    sm: '-20px',
+                  },
                   left: '5px',
                   display: 'flex',
                   alignItems: 'center',
@@ -86,7 +89,6 @@ const CustomCard = ({ name, imageSource, id, favorite }: EmployeeCardProps) => {
                   padding: '3px',
                   aspectRatio: '1/1',
                   borderRadius: '50%',
-                  // backgroundColor: palette.secondary.main,
                   backgroundColor: 'rgba(242, 240, 240, 0.85)',
                   backdropFilter: 'blur(6px)',
                   boxShadow: 1,
@@ -95,7 +97,10 @@ const CustomCard = ({ name, imageSource, id, favorite }: EmployeeCardProps) => {
                 <Typography
                   variant="subtitle2"
                   width="max-content"
-                  fontSize={id.length === 3 ? '0.7rem' : '0.9rem'}
+                  fontSize={{
+                    sx: id.length === 3 ? '0.3rem' : '0.4rem',
+                    sm: id.length === 3 ? '0.7rem' : '0.9rem',
+                  }}
                   fontWeight={700}
                   sx={{
                     textAlign: 'center',
@@ -112,7 +117,10 @@ const CustomCard = ({ name, imageSource, id, favorite }: EmployeeCardProps) => {
             direction="column"
             justifyContent="center"
             alignItems="center"
-            padding={3}
+            padding={{
+              sx: 2,
+              sm: 3,
+            }}
             height="100%"
             width="100%"
             spacing={2}
@@ -154,4 +162,4 @@ const CustomCard = ({ name, imageSource, id, favorite }: EmployeeCardProps) => {
   );
 };
 
-export default CustomCard;
+export default CharacterCard;
