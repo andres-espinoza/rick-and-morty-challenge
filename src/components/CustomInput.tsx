@@ -6,18 +6,23 @@ interface CustomInputProps {
   handleChange: (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
+  label?: string;
 }
 
-const CustomInput = ({ handleChange }: CustomInputProps) => {
+const CustomInput = ({ handleChange, label = '' }: CustomInputProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, react-hooks/exhaustive-deps, @typescript-eslint/no-unsafe-call
   const debounceHandleChange = useCallback(debounce(handleChange, 400), []);
 
   return (
     <TextField
+      label={label}
+      placeholder="search"
+      multiline
+      variant="outlined"
       sx={{
         width: '300px',
         marginX: 'auto',
-        paddingTop: 3,
+        marginTop: 3,
       }}
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       onChange={debounceHandleChange}
