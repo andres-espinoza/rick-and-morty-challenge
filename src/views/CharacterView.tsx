@@ -1,43 +1,37 @@
 import { Box, Grid, Typography } from '@mui/material';
 import { ChangeEvent, useEffect, useState } from 'react';
-import CustomCard from '../components/CustomCard';
+import CharacterCard from '../components/CharacterCard';
 import CustomInput from '../components/CustomInput';
 import CustomPagination from '../components/Pagination';
-import CharactersService, {
-  Character,
-  CharactersByPage,
-} from '../services/characters';
+import CharacterService from '../services/characters';
+import { Character, CharactersByPage } from '../services/characters/types';
 import { useAppSelector } from '../store';
 import getItemsUsingAppPagination from '../utils/getItemsUsingAppPagination';
+import handleChangePage from '../utils/handleChangePage';
 
-interface CharactersDisplayed extends CharactersByPage {
+interface DisplayCharacters extends CharactersByPage {
   userSearching: boolean;
   selected: CharactersByPage['characters'];
 }
 
-const CharactersView = () => {
+const CharacterView = () => {
   const { favorites } = useAppSelector((state) => state.characters);
 
   const [loading, setLoading] = useState(false);
 
   // Lógica de personajes mostrados
-  const [charactersDisplayed, setCharactersDisplayed] =
-    useState<CharactersDisplayed>({
+  const [displayCharacters, setDisplayCharacters] = useState<DisplayCharacters>(
+    {
       characters: [],
       selected: [],
-      totalAmountOfCharacters: 0,
       totalAmountOfPages: 0,
       userSearching: false,
-    });
+    }
+  );
 
   // Lógica de paginación
   const [page, setPage] = useState(1);
-  const handleChangePage = (
-    _event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
-    setPage(value);
-  };
+  const handlePagination = handleChangePage(setPage);
 
   const handleSearchCharacter = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -45,16 +39,17 @@ const CharactersView = () => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     (async () => {
       setLoading(true);
-      setCharactersDisplayed((prevState) => ({
+      setDisplayCharacters((prevState) => ({
         ...prevState,
         userSearching: true,
       }));
 
       try {
         if (event.target.value !== '') {
-          const matchingCharacters =
-            await CharactersService.GetCharactersByName(event.target.value);
-          setCharactersDisplayed((prevState) => ({
+          const matchingCharacters = await CharacterService.GetCharactersByName(
+            event.target.value
+          );
+          setDisplayCharacters((prevState) => ({
             ...prevState,
             ...matchingCharacters,
             selected: getItemsUsingAppPagination<Character>(
@@ -63,11 +58,10 @@ const CharactersView = () => {
             ),
           }));
         } else {
-          setCharactersDisplayed((prevState) => ({
+          setDisplayCharacters((prevState) => ({
             ...prevState,
             userSearching: false,
           }));
-          console.log('??');
           setPage(1);
         }
       } catch (error) {
@@ -77,50 +71,40 @@ const CharactersView = () => {
     })();
   };
 
-  const getCharacterUsingAPIPagination = async () => {
-    const charactersToDisplay = await CharactersService.getCharactersByPage(
+  const getCharactersUsingApiPagination = async () => {
+    const charactersToDisplay = await CharacterService.getCharactersByPage(
       page
     );
-    setCharactersDisplayed((prevState) => ({
+    setDisplayCharacters((prevState) => ({
       ...prevState,
       ...charactersToDisplay,
       selected: charactersToDisplay.characters,
     }));
-    console.log(
-      'personajes buscados por la paginacion API: ',
-      charactersToDisplay
-    );
   };
 
-  useEffect(
-    () => {
-      // El usuario no tiene nada escrito en el input, por ende busco la data usando la paginación de la API
-      if (!charactersDisplayed.userSearching) {
-        setLoading(true);
-        getCharacterUsingAPIPagination().catch((error: Error) =>
-          console.error(error?.message)
-        );
-        setLoading(false);
+  useEffect(() => {
+    // El usuario no tiene nada escrito en el input, por ende busco la data usando la paginación de la API
+    if (!displayCharacters.userSearching) {
+      setLoading(true);
+      getCharactersUsingApiPagination().catch((error: Error) =>
+        console.error(error?.message)
+      );
+      setLoading(false);
 
-        // El usuario si tiene algo escrito en el input, por ende busco la data por la paginación de la aplicación
-      } else if (charactersDisplayed.userSearching) {
-        setCharactersDisplayed((prevState) => ({
-          ...prevState,
-          selected: getItemsUsingAppPagination<Character>(
-            page,
-            prevState.characters
-          ),
-        }));
-        console.log(
-          'Seleccionados por la paginación APP: ',
-          charactersDisplayed.selected
-        );
-      }
-    },
+      // El usuario si tiene algo escrito en el input, por ende busco la data por la paginación de la aplicación
+    } else {
+      setDisplayCharacters((prevState) => ({
+        ...prevState,
+        selected: getItemsUsingAppPagination<Character>(
+          page,
+          prevState.characters
+        ),
+      }));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [page, charactersDisplayed.userSearching]
-  );
+  }, [page, displayCharacters.userSearching]);
 
+  // TODO: Mejorar el Loader
   return (
     <>
       <Typography
@@ -128,8 +112,7 @@ const CharactersView = () => {
         width="100%"
         textAlign="center"
       >
-        {' '}
-        Characters View
+        Character View
       </Typography>
       <CustomInput handleChange={handleSearchCharacter} />
       {loading ? <h2>LOADING!</h2> : null}
@@ -139,8 +122,8 @@ const CharactersView = () => {
           rowSpacing={4}
           marginTop={4}
         >
-          {charactersDisplayed.selected.length > 0
-            ? charactersDisplayed.selected.map((character) => (
+          {displayCharacters.selected.length > 0
+            ? displayCharacters.selected.map((character) => (
                 <Grid
                   item
                   xs={12}
@@ -153,7 +136,7 @@ const CharactersView = () => {
                     justifyContent: 'center',
                   }}
                 >
-                  <CustomCard
+                  <CharacterCard
                     name={character?.name || 'broken'}
                     id={character?.id || 'broken'}
                     imageSource={character?.image || 'broken'}
@@ -164,8 +147,8 @@ const CharactersView = () => {
             : null}
         </Grid>
         <CustomPagination
-          count={charactersDisplayed.totalAmountOfPages}
-          handleChange={handleChangePage}
+          count={displayCharacters.totalAmountOfPages}
+          handleChange={handlePagination}
           page={page}
         />
       </Box>
@@ -173,4 +156,4 @@ const CharactersView = () => {
   );
 };
 
-export default CharactersView;
+export default CharacterView;

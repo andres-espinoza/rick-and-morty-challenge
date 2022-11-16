@@ -1,22 +1,12 @@
 import { ApolloQueryResult } from '@apollo/client';
 import { apolloClient } from '../../graphql';
+import apolloErrorChecker from '../apolloErrorChecker';
 import { GET_CHARACTERS_BY_PAGE, GET_CHARACTERS_BY_NAME } from './queries';
+import { CharactersByPage } from './types';
 import { GetCharactersByName } from './__generated__/GetCharactersByName';
-import {
-  GetCharactersByPage,
-  GetCharactersByPage_characters_results,
-} from './__generated__/GetCharactersByPage';
+import { GetCharactersByPage } from './__generated__/GetCharactersByPage';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Character extends GetCharactersByPage_characters_results {}
-
-export interface CharactersByPage {
-  totalAmountOfCharacters: number;
-  totalAmountOfPages: number;
-  characters: Character[];
-}
-
-class CharactersService {
+class CharacterService {
   async getCharactersByPage(page = 1) {
     try {
       const response: ApolloQueryResult<GetCharactersByPage> =
@@ -25,26 +15,10 @@ class CharactersService {
           variables: { page },
         });
 
-      if (response?.error) {
-        console.error(
-          `Error getting characters by ${page}: ${response.error?.message}`
-        );
-        throw Error(response.error.message);
-      }
-
-      if (response?.errors) {
-        response.errors?.forEach((error, idx) =>
-          console.error(
-            `Error #${idx + 1} getting characters by ${page}: ${error?.message}`
-          )
-        );
-        throw Error(response.errors[0].message);
-      }
-
-      if (!response || !response?.data) {
-        throw new Error(`Error getting characters by ${page}`);
-      }
-      const { data } = response;
+      const data = apolloErrorChecker<GetCharactersByPage>(
+        response,
+        'characters'
+      );
 
       if (!data?.characters?.info || !data?.characters?.results) {
         throw new Error(
@@ -58,13 +32,11 @@ class CharactersService {
 
       if (info.count && info.pages && results) {
         return {
-          totalAmountOfCharacters: info.count,
           totalAmountOfPages: info.pages,
           characters: results.filter((character) => character !== null),
         } as CharactersByPage;
       }
       return {
-        totalAmountOfCharacters: 0,
         totalAmountOfPages: 0,
         characters: [],
       } as CharactersByPage;
@@ -79,7 +51,6 @@ class CharactersService {
     page = 1,
     storage: CharactersByPage = {
       characters: [],
-      totalAmountOfCharacters: 0,
       totalAmountOfPages: 0,
     }
   ): Promise<CharactersByPage> {
@@ -89,26 +60,11 @@ class CharactersService {
           query: GET_CHARACTERS_BY_NAME,
           variables: { name, page },
         });
-      if (response?.error) {
-        console.error(
-          `Error getting characters by ${name}: ${response.error?.message}`
-        );
-        throw Error(response.error.message);
-      }
 
-      if (response?.errors) {
-        response.errors?.forEach((error, idx) =>
-          console.error(
-            `Error #${idx + 1} getting characters by ${name}: ${error?.message}`
-          )
-        );
-        throw Error(response.errors[0].message);
-      }
-
-      if (!response || !response?.data) {
-        throw new Error(`Error getting characters by ${name}`);
-      }
-      const { data } = response;
+      const data = apolloErrorChecker<GetCharactersByName>(
+        response,
+        'characters'
+      );
 
       if (!data?.characters?.info || !data?.characters?.results) {
         throw new Error(
@@ -147,4 +103,4 @@ class CharactersService {
   }
 }
 
-export default new CharactersService();
+export default new CharacterService();

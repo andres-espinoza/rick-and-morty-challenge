@@ -7,6 +7,22 @@
 // GraphQL query operation: GetCharactersByName
 // ====================================================
 
+export interface GetCharactersByName_characters_info {
+  __typename: "Info";
+  /**
+   * The amount of pages.
+   */
+  pages: number | null;
+  /**
+   * The length of the response.
+   */
+  count: number | null;
+  /**
+   * Number of the next page (if it exists)
+   */
+  next: number | null;
+}
+
 export interface GetCharactersByName_characters_results {
   __typename: "Character";
   /**
@@ -24,26 +40,10 @@ export interface GetCharactersByName_characters_results {
   image: string | null;
 }
 
-export interface GetCharactersByName_characters_info {
-  __typename: "Info";
-  /**
-   * The amount of pages.
-   */
-  pages: number | null;
-  /**
-   * The length of the response.
-   */
-  count: number | null;
-  /**
-   * Number of the next page (if it exists)
-   */
-  next: number | null;
-}
-
 export interface GetCharactersByName_characters {
   __typename: "Characters";
-  results: (GetCharactersByName_characters_results | null)[] | null;
   info: GetCharactersByName_characters_info | null;
+  results: (GetCharactersByName_characters_results | null)[] | null;
 }
 
 export interface GetCharactersByName {

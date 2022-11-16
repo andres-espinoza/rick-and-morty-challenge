@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { CharacterSliceShape } from './types';
-import CharactersService from '../../services/characters/index';
+import CharacterService from '../../services/characters/index';
 
 const initialState: CharacterSliceShape = {
   charactersBasicData: [],
@@ -14,7 +14,7 @@ export const getCharactersBasicData = createAsyncThunk<
   CharacterSliceShape['charactersBasicData']
 >('characters/getAllBasicData', async (_, thunkAPI) => {
   try {
-    const characters = await CharactersService.getAllCharactersBasicData();
+    const characters = await CharacterService.getAllCharactersBasicData();
     if (characters) {
       return characters.filter(
         (character) => character !== null

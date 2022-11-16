@@ -20,15 +20,15 @@ export const GET_CHARACTERS_BY_PAGE = gql`
 export const GET_CHARACTERS_BY_NAME = gql`
   query GetCharactersByName($name: String!, $page: Int!) {
     characters(page: $page, filter: { name: $name }) {
-      results {
-        name
-        id
-        image
-      }
       info {
         pages
         count
         next
+      }
+      results {
+        name
+        id
+        image
       }
     }
   }
