@@ -1,17 +1,18 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Box, Grid, Typography } from '@mui/material';
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import AutocompleteMultiSelector from '../components/autocomplete/AutocompleteMultiSelector';
+import { ChangeEvent, useEffect, useState } from 'react';
 import CustomCard from '../components/CustomCard';
 import CustomInput from '../components/CustomInput';
 import CustomPagination from '../components/Pagination';
-import CharactersService, { CharactersByPage } from '../services/characters';
-// import useQueryParams from '../hooks/useQueryParams';
+import CharactersService, {
+  Character,
+  CharactersByPage,
+} from '../services/characters';
 import { useAppSelector } from '../store';
-import { CharacterShape, CharacterSliceShape } from '../store/slices/types';
+import getItemsUsingAppPagination from '../utils/getItemsUsingAppPagination';
 
 interface CharactersDisplayed extends CharactersByPage {
   userSearching: boolean;
+  selected: CharactersByPage['characters'];
 }
 
 const CharactersView = () => {
@@ -23,6 +24,7 @@ const CharactersView = () => {
   const [charactersDisplayed, setCharactersDisplayed] =
     useState<CharactersDisplayed>({
       characters: [],
+      selected: [],
       totalAmountOfCharacters: 0,
       totalAmountOfPages: 0,
       userSearching: false,
@@ -37,7 +39,6 @@ const CharactersView = () => {
     setPage(value);
   };
 
-  //! En progreso
   const handleSearchCharacter = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -56,12 +57,17 @@ const CharactersView = () => {
           setCharactersDisplayed((prevState) => ({
             ...prevState,
             ...matchingCharacters,
+            selected: getItemsUsingAppPagination<Character>(
+              page,
+              matchingCharacters.characters
+            ),
           }));
         } else {
           setCharactersDisplayed((prevState) => ({
             ...prevState,
             userSearching: false,
           }));
+          console.log('??');
           setPage(1);
         }
       } catch (error) {
@@ -70,45 +76,49 @@ const CharactersView = () => {
       setLoading(false);
     })();
   };
-  // const paginateData = (
-  //   pag: number,
-  //   data: CharactersByPage['characters'],
-  //   dataPerPage = 20
-  // ) => {
-  //   if (!data || data.length < 1) return [];
-  //   const from = dataPerPage * pag - dataPerPage;
-  //   const to = dataPerPage * pag;
-  //   return data.slice(from, to);
-  // };
 
-  // const initCharacters = useCallback(async () => {
-  //   const charactersToDisplay = await CharactersService.getCharactersByPage(
-  //     page
-  //   );
-  // }, [page]);
-
-  const getCharacterUsingPagination = async () => {
+  const getCharacterUsingAPIPagination = async () => {
     const charactersToDisplay = await CharactersService.getCharactersByPage(
       page
     );
     setCharactersDisplayed((prevState) => ({
       ...prevState,
       ...charactersToDisplay,
+      selected: charactersToDisplay.characters,
     }));
+    console.log(
+      'personajes buscados por la paginacion API: ',
+      charactersToDisplay
+    );
   };
 
   useEffect(
     () => {
+      // El usuario no tiene nada escrito en el input, por ende busco la data usando la paginación de la API
       if (!charactersDisplayed.userSearching) {
         setLoading(true);
-        getCharacterUsingPagination().catch((error: Error) =>
+        getCharacterUsingAPIPagination().catch((error: Error) =>
           console.error(error?.message)
         );
         setLoading(false);
+
+        // El usuario si tiene algo escrito en el input, por ende busco la data por la paginación de la aplicación
+      } else if (charactersDisplayed.userSearching) {
+        setCharactersDisplayed((prevState) => ({
+          ...prevState,
+          selected: getItemsUsingAppPagination<Character>(
+            page,
+            prevState.characters
+          ),
+        }));
+        console.log(
+          'Seleccionados por la paginación APP: ',
+          charactersDisplayed.selected
+        );
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [page]
+    [page, charactersDisplayed.userSearching]
   );
 
   return (
@@ -123,39 +133,14 @@ const CharactersView = () => {
       </Typography>
       <CustomInput handleChange={handleSearchCharacter} />
       {loading ? <h2>LOADING!</h2> : null}
-      {/* <AutocompleteMultiSelector
-        dataSource={charactersBasicData || []}
-        selectedData={[]}
-        renderFunc={(character: CharacterShape) => {
-          if (character?.id && character?.name)
-            return `#${character.id} - ${character.name}`;
-          if (character?.id) return `Character number #${character.id}`;
-          if (character?.name) return character?.name;
-          return 'No data avaible';
-        }}
-        addAll
-        label="Characters"
-        onChange={(_e, data: CharacterShape[]) => {
-          if (
-            (charactersBasicData && data.length === 0) ||
-            (charactersBasicData && data.length === charactersBasicData.length)
-          ) {
-            setCharactersInPage(paginateData(page, charactersBasicData));
-            setCount(Math.floor(charactersBasicData.length / 24));
-          } else {
-            setCharactersInPage(paginateData(1, data));
-            setCount(Math.floor(data.length / 24));
-          }
-        }}
-      /> */}
       <Box sx={{ width: '100%' }}>
         <Grid
           container
           rowSpacing={4}
           marginTop={4}
         >
-          {charactersDisplayed.characters.length > 0
-            ? charactersDisplayed.characters.map((character) => (
+          {charactersDisplayed.selected.length > 0
+            ? charactersDisplayed.selected.map((character) => (
                 <Grid
                   item
                   xs={12}

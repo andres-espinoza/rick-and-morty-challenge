@@ -16,6 +16,8 @@ const CustomInput = ({ handleChange }: CustomInputProps) => {
     <TextField
       sx={{
         width: '300px',
+        marginX: 'auto',
+        paddingTop: 3,
       }}
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       onChange={debounceHandleChange}

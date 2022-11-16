@@ -34,6 +34,10 @@ export interface GetCharactersByName_characters_info {
    * The length of the response.
    */
   count: number | null;
+  /**
+   * Number of the next page (if it exists)
+   */
+  next: number | null;
 }
 
 export interface GetCharactersByName_characters {
@@ -51,4 +55,5 @@ export interface GetCharactersByName {
 
 export interface GetCharactersByNameVariables {
   name: string;
+  page: number;
 }

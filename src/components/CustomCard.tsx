@@ -60,6 +60,7 @@ const CustomCard = ({ name, imageSource, id, favorite }: EmployeeCardProps) => {
             }}
           >
             <Button
+              onClick={() => console.log(id)}
               sx={{
                 padding: 0,
                 color: palette.text.primary,

@@ -74,14 +74,21 @@ class CharactersService {
     }
   }
 
-  async GetCharactersByName(name: string) {
+  async GetCharactersByName(
+    name: string,
+    page = 1,
+    storage: CharactersByPage = {
+      characters: [],
+      totalAmountOfCharacters: 0,
+      totalAmountOfPages: 0,
+    }
+  ): Promise<CharactersByPage> {
     try {
       const response: ApolloQueryResult<GetCharactersByName> =
         await apolloClient.query({
           query: GET_CHARACTERS_BY_NAME,
-          variables: { name },
+          variables: { name, page },
         });
-
       if (response?.error) {
         console.error(
           `Error getting characters by ${name}: ${response.error?.message}`
@@ -113,18 +120,26 @@ class CharactersService {
         characters: { info, results },
       } = data;
 
-      if (info.count && info.pages && results) {
-        return {
-          totalAmountOfCharacters: info.count,
-          totalAmountOfPages: info.pages,
-          characters: results.filter((character) => character !== null),
-        } as CharactersByPage;
+      if (page === 1) {
+        if (info.count && info.pages && results.length > 0) {
+          storage = {
+            totalAmountOfCharacters: info.count,
+            totalAmountOfPages: info.pages,
+            characters: results.filter((character) => character !== null),
+          } as CharactersByPage;
+        }
       }
-      return {
-        totalAmountOfCharacters: 0,
-        totalAmountOfPages: 0,
-        characters: [],
-      } as CharactersByPage;
+      if (page > 1 && results.length > 0) {
+        storage.characters = [
+          ...storage.characters,
+          ...(results.filter(
+            (character) => character !== null
+          ) as CharactersByPage['characters']),
+        ];
+      }
+
+      if (!info.next) return storage;
+      return await this.GetCharactersByName(name, info.next, storage);
     } catch (error) {
       console.error(`Error getting characters by ${name}`);
       throw error;
