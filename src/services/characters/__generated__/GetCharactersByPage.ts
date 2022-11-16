@@ -10,6 +10,10 @@
 export interface GetCharactersByPage_characters_info {
   __typename: "Info";
   /**
+   * Number of the next page (if it exists)
+   */
+  next: number | null;
+  /**
    * The length of the response.
    */
   count: number | null;

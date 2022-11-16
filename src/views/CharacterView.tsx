@@ -4,18 +4,18 @@ import CharacterCard from '../components/CharacterCard';
 import CustomInput from '../components/CustomInput';
 import CustomPagination from '../components/Pagination';
 import CharacterService from '../services/characters';
-import { Character, CharactersByPage } from '../services/characters/types';
+import { Character, CharactersPerPage } from '../services/characters/types';
 import { useAppSelector } from '../store';
 import getItemsUsingAppPagination from '../utils/getItemsUsingAppPagination';
 import handleChangePage from '../utils/handleChangePage';
 
-interface DisplayCharacters extends CharactersByPage {
+interface DisplayCharacters extends CharactersPerPage {
   userSearching: boolean;
-  selected: CharactersByPage['characters'];
+  selected: CharactersPerPage['characters'];
 }
 
 const CharacterView = () => {
-  const { favorites } = useAppSelector((state) => state.characters);
+  const { favorites } = useAppSelector((state) => state.character);
 
   const [loading, setLoading] = useState(false);
 
@@ -116,11 +116,13 @@ const CharacterView = () => {
       </Typography>
       <CustomInput handleChange={handleSearchCharacter} />
       {loading ? <h2>LOADING!</h2> : null}
-      <Box sx={{ width: '100%' }}>
+      <Box
+        sx={{ width: '100%' }}
+        marginTop={5}
+      >
         <Grid
           container
           rowSpacing={4}
-          marginTop={4}
         >
           {displayCharacters.selected.length > 0
             ? displayCharacters.selected.map((character) => (

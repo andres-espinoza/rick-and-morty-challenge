@@ -20,7 +20,8 @@ const CustomInput = ({ handleChange, label = '' }: CustomInputProps) => {
       multiline
       variant="outlined"
       sx={{
-        width: '300px',
+        minWidth: '260px',
+        maxWidth: '300px',
         marginX: 'auto',
         marginTop: 3,
       }}

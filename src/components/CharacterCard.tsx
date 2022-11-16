@@ -150,7 +150,8 @@ const CharacterCard = ({
               width="auto"
               textAlign="center"
               fontSize={{
-                lg: '0.8rem',
+                xs: '0.65rem',
+                sm: '0.8rem',
               }}
             >
               {name}

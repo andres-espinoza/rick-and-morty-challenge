@@ -14,7 +14,10 @@ const EpisodeCard = ({ episode, name, id }: EpisodeCardProps) => {
     <Card
       sx={{
         width: { xs: '90%', sm: '400px', lg: '450px' },
-        aspectRatio: '4/1.1',
+        aspectRatio: {
+          xs: '4/1.4',
+          sm: '4/1.1',
+        },
       }}
     >
       <CardContent
@@ -40,7 +43,7 @@ const EpisodeCard = ({ episode, name, id }: EpisodeCardProps) => {
               lg: 400,
             }}
             fontSize={{
-              xs: '0.6rem',
+              xs: '0.8rem',
               sm: '1rem',
               lg: '1rem',
             }}
@@ -49,7 +52,7 @@ const EpisodeCard = ({ episode, name, id }: EpisodeCardProps) => {
             textAlign="center"
             fontWeight={{ xs: 600, sm: 500, lg: 500 }}
             fontSize={{
-              xs: '0.7rem',
+              xs: '0.9rem',
               sm: '1rem',
               lg: '1.1rem',
             }}

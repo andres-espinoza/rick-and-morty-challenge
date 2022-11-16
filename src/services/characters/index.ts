@@ -2,7 +2,7 @@ import { ApolloQueryResult } from '@apollo/client';
 import { apolloClient } from '../../graphql';
 import apolloErrorChecker from '../apolloErrorChecker';
 import { GET_CHARACTERS_BY_PAGE, GET_CHARACTERS_BY_NAME } from './queries';
-import { CharactersByPage } from './types';
+import { CharactersPerPage } from './types';
 import { GetCharactersByName } from './__generated__/GetCharactersByName';
 import { GetCharactersByPage } from './__generated__/GetCharactersByPage';
 
@@ -34,12 +34,12 @@ class CharacterService {
         return {
           totalAmountOfPages: info.pages,
           characters: results.filter((character) => character !== null),
-        } as CharactersByPage;
+        } as CharactersPerPage;
       }
       return {
         totalAmountOfPages: 0,
         characters: [],
-      } as CharactersByPage;
+      } as CharactersPerPage;
     } catch (error) {
       console.error(`Error getting characters by ${page}`);
       throw error;
@@ -49,11 +49,11 @@ class CharacterService {
   async GetCharactersByName(
     name: string,
     page = 1,
-    storage: CharactersByPage = {
+    storage: CharactersPerPage = {
       characters: [],
       totalAmountOfPages: 0,
     }
-  ): Promise<CharactersByPage> {
+  ): Promise<CharactersPerPage> {
     try {
       const response: ApolloQueryResult<GetCharactersByName> =
         await apolloClient.query({
@@ -79,10 +79,9 @@ class CharacterService {
       if (page === 1) {
         if (info.count && info.pages && results.length > 0) {
           storage = {
-            totalAmountOfCharacters: info.count,
             totalAmountOfPages: info.pages,
             characters: results.filter((character) => character !== null),
-          } as CharactersByPage;
+          } as CharactersPerPage;
         }
       }
       if (page > 1 && results.length > 0) {
@@ -90,7 +89,7 @@ class CharacterService {
           ...storage.characters,
           ...(results.filter(
             (character) => character !== null
-          ) as CharactersByPage['characters']),
+          ) as CharactersPerPage['characters']),
         ];
       }
 
