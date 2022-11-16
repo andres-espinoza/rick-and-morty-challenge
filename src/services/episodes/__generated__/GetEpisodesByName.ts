@@ -4,10 +4,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetEpisodesByPage
+// GraphQL query operation: GetEpisodesByName
 // ====================================================
 
-export interface GetEpisodesByPage_episodes_info {
+export interface GetEpisodesByName_episodes_info {
   __typename: "Info";
   /**
    * The amount of pages.
@@ -17,9 +17,13 @@ export interface GetEpisodesByPage_episodes_info {
    * The length of the response.
    */
   count: number | null;
+  /**
+   * Number of the next page (if it exists)
+   */
+  next: number | null;
 }
 
-export interface GetEpisodesByPage_episodes_results {
+export interface GetEpisodesByName_episodes_results {
   __typename: "Episode";
   /**
    * The id of the episode.
@@ -35,19 +39,20 @@ export interface GetEpisodesByPage_episodes_results {
   episode: string | null;
 }
 
-export interface GetEpisodesByPage_episodes {
+export interface GetEpisodesByName_episodes {
   __typename: "Episodes";
-  info: GetEpisodesByPage_episodes_info | null;
-  results: (GetEpisodesByPage_episodes_results | null)[] | null;
+  info: GetEpisodesByName_episodes_info | null;
+  results: (GetEpisodesByName_episodes_results | null)[] | null;
 }
 
-export interface GetEpisodesByPage {
+export interface GetEpisodesByName {
   /**
    * Get the list of all episodes
    */
-  episodes: GetEpisodesByPage_episodes | null;
+  episodes: GetEpisodesByName_episodes | null;
 }
 
-export interface GetEpisodesByPageVariables {
+export interface GetEpisodesByNameVariables {
+  name: string;
   page: number;
 }

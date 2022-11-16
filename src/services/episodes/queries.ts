@@ -15,3 +15,20 @@ export const GET_EPISODES_BY_PAGE = gql`
     }
   }
 `;
+
+export const GET_EPISODES_BY_NAME = gql`
+  query GetEpisodesByName($name: String!, $page: Int!) {
+    episodes(page: $page, filter: { name: $name }) {
+      info {
+        pages
+        count
+        next
+      }
+      results {
+        id
+        name
+        episode
+      }
+    }
+  }
+`;

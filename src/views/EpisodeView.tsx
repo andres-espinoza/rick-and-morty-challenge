@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import { Episode, EpisodesPerPage } from '../services/episodes/types';
 import handleChangePage from '../utils/handleChangePage';
@@ -6,7 +6,7 @@ import EpisodesService from '../services/episodes';
 import getItemsUsingAppPagination from '../utils/getItemsUsingAppPagination';
 import EpisodeCard from '../components/EpisodeCard';
 import CustomPagination from '../components/Pagination';
-// import CustomInput from '../components/CustomInput';
+import CustomInput from '../components/CustomInput';
 
 interface DisplayEpisodes extends EpisodesPerPage {
   userSearching: boolean;
@@ -27,43 +27,43 @@ const EpisodeView = () => {
   const [page, setPage] = useState(1);
   const handlePagination = handleChangePage(setPage);
 
-  // const handleSearchCharacter = (
-  //   event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  // ) => {
-  //   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  //   (async () => {
-  //     setLoading(true);
-  //     setDisplayEpisodes((prevState) => ({
-  //       ...prevState,
-  //       userSearching: true,
-  //     }));
+  const handleSearchCharacter = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    (async () => {
+      setLoading(true);
+      setDisplayEpisodes((prevState) => ({
+        ...prevState,
+        userSearching: true,
+      }));
 
-  //     try {
-  //       if (event.target.value !== '') {
-  //         const matchingCharacters = await EpisodesService.GetEpisodesByName(
-  //           event.target.value
-  //         );
-  //         setDisplayEpisodes((prevState) => ({
-  //           ...prevState,
-  //           ...matchingCharacters,
-  //           selected: getItemsUsingAppPagination<Character>(
-  //             page,
-  //             matchingCharacters.characters
-  //           ),
-  //         }));
-  //       } else {
-  //         setDisplayEpisodes((prevState) => ({
-  //           ...prevState,
-  //           userSearching: false,
-  //         }));
-  //         setPage(1);
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //     setLoading(false);
-  //   })();
-  // };
+      try {
+        if (event.target.value !== '') {
+          const matchingEpisodes = await EpisodesService.GetEpisodesByName(
+            event.target.value
+          );
+          setDisplayEpisodes((prevState) => ({
+            ...prevState,
+            ...matchingEpisodes,
+            selected: getItemsUsingAppPagination<Episode>(
+              page,
+              matchingEpisodes.episodes
+            ),
+          }));
+        } else {
+          setDisplayEpisodes((prevState) => ({
+            ...prevState,
+            userSearching: false,
+          }));
+          setPage(1);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      setLoading(false);
+    })();
+  };
 
   const getEpisodesUsingApiPagination = async () => {
     const episodesToDisplay = await EpisodesService.getEpisodesByPage(page);
@@ -102,7 +102,7 @@ const EpisodeView = () => {
       >
         Episode View
       </Typography>
-      {/* <CustomInput handleChange={} /> */}
+      <CustomInput handleChange={handleSearchCharacter} />
       {loading ? <h2>LOADING!</h2> : null}
       <Box sx={{ width: '100%', marginTop: 5 }}>
         <Stack
