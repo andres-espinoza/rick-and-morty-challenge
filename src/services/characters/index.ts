@@ -12,6 +12,8 @@ class CharactersService {
     page = 1,
     storage: (GetCharactersBasicData_characters_results | null)[] = []
   ): Promise<GetCharactersBasicData_characters['results']> {
+    console.log('mmmm');
+
     try {
       const response: ApolloQueryResult<GetCharactersBasicData> =
         await apolloClient.query({

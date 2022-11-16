@@ -24,11 +24,7 @@ const CustomCard = ({ name, imageSource, id, favorite }: EmployeeCardProps) => {
   const { palette } = useTheme();
   const dispatch = useAppDispatch();
   const handleClick = () => {
-    if (favorite) {
-      dispatch(setFavoriteCharacter({ id, favorite: false }));
-    } else {
-      dispatch(setFavoriteCharacter({ id, favorite: true }));
-    }
+    dispatch(setFavoriteCharacter(id));
   };
   return (
     <Card

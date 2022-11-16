@@ -5,19 +5,11 @@ import { PaginationItem } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 interface CustomPaginationProps {
-  // handleChange: (event: React.ChangeEvent<unknown>, value: number) => void;
   currentPage: number;
+  count: number;
 }
 
-const CustomPagination = ({
-  // handleChange,
-  currentPage,
-}: CustomPaginationProps) => {
-  // const [page, setPage] = React.useState(1);
-  // const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-  //   setPage(value);
-  // };
-
+const CustomPagination = ({ currentPage, count }: CustomPaginationProps) => {
   return (
     <Stack
       spacing={2}
@@ -26,7 +18,7 @@ const CustomPagination = ({
       padding={5}
     >
       <Pagination
-        count={10}
+        count={count === 0 ? 1 : count}
         page={currentPage}
         renderItem={(item) => (
           <PaginationItem

@@ -1,21 +1,27 @@
 import { Box, Grid, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
+import AutocompleteMultiSelector from '../components/autocomplete/AutocompleteMultiSelector';
 import CustomCard from '../components/CustomCard';
 import CustomPagination from '../components/Pagination';
 import useQueryParams from '../hooks/useQueryParams';
 import { useAppSelector } from '../store';
-import { CharacterSliceShape } from '../store/slices/types';
+import { CharacterShape, CharacterSliceShape } from '../store/slices/types';
 
 const CharactersView = () => {
-  const { charactersBasicData, loading } = useAppSelector(
+  const { charactersBasicData, favorites } = useAppSelector(
     (state) => state.characters
   );
 
   const queryParams = useQueryParams();
   const currentPage = Number(queryParams.get('page')) || 1;
 
-  const [charactersPage, setCharactersPage] =
-    useState<CharacterSliceShape['charactersBasicData']>(null);
+  const [charactersInPage, setCharactersInPage] = useState<
+    CharacterSliceShape['charactersBasicData']
+  >([]);
+
+  const [count, setCount] = useState(
+    Math.floor(charactersBasicData.length / 24)
+  );
 
   const paginateData = (
     page: number,
@@ -30,9 +36,14 @@ const CharactersView = () => {
 
   useEffect(() => {
     if (charactersBasicData) {
-      setCharactersPage(paginateData(currentPage, charactersBasicData));
+      setCharactersInPage(paginateData(currentPage, charactersBasicData));
+      // setCount(Math.floor(charactersBasicData.length / 24));
+    } else {
+      setCharactersInPage(paginateData(currentPage, []));
+      // setCount(1);
     }
-  }, [currentPage, charactersBasicData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
   return (
     <>
       <Typography
@@ -43,7 +54,31 @@ const CharactersView = () => {
         {' '}
         Characters View
       </Typography>
-      {loading ? <h1>...Loading</h1> : null}
+      <AutocompleteMultiSelector
+        dataSource={charactersBasicData || []}
+        selectedData={[]}
+        renderFunc={(character: CharacterShape) => {
+          if (character?.id && character?.name)
+            return `#${character.id} - ${character.name}`;
+          if (character?.id) return `Character number #${character.id}`;
+          if (character?.name) return character?.name;
+          return 'No data avaible';
+        }}
+        addAll
+        label="Characters"
+        onChange={(_e, data: CharacterShape[]) => {
+          if (
+            (charactersBasicData && data.length === 0) ||
+            (charactersBasicData && data.length === charactersBasicData.length)
+          ) {
+            setCharactersInPage(paginateData(currentPage, charactersBasicData));
+            setCount(Math.floor(charactersBasicData.length / 24));
+          } else {
+            setCharactersInPage(paginateData(currentPage, data));
+            setCount(Math.floor(data.length / 24));
+          }
+        }}
+      />
       <Box sx={{ width: '100%' }}>
         <Grid
           container
@@ -51,8 +86,8 @@ const CharactersView = () => {
           marginTop={4}
           // columnSpacing={{ xs: 1, sm: 2, md: 3 }}
         >
-          {!loading && charactersPage && charactersPage.length > 0
-            ? charactersPage.map((character) => (
+          {charactersInPage && charactersInPage.length > 0
+            ? charactersInPage.map((character) => (
                 <Grid
                   item
                   xs={12}
@@ -69,11 +104,7 @@ const CharactersView = () => {
                     name={character?.name || 'broken'}
                     id={character?.id || 'broken'}
                     imageSource={character?.image || 'broken'}
-                    favorite={
-                      character?.favorite === undefined
-                        ? false
-                        : character.favorite
-                    }
+                    favorite={favorites.includes(character?.id || '-1')}
                   />
                 </Grid>
               ))
@@ -81,6 +112,10 @@ const CharactersView = () => {
         </Grid>
         <CustomPagination
           currentPage={currentPage}
+          // count={
+          //   charactersInPage ? Math.floor(charactersInPage.length / 24) : 0
+          // }
+          count={count}
           // handleChange={handlePaginationChange}
         />
       </Box>

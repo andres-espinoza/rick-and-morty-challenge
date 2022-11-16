@@ -1,20 +1,28 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { CharacterShape, CharacterSliceShape } from './types';
+import { CharacterSliceShape } from './types';
 import CharactersService from '../../services/characters/index';
-import { GetCharactersBasicData_characters } from '../../services/characters/__generated__/GetCharactersBasicData';
 
 const initialState: CharacterSliceShape = {
-  charactersBasicData: null,
+  charactersBasicData: [],
   loading: false,
   error: null,
+  favorites: [],
+  // select: []
 };
 
 export const getCharactersBasicData = createAsyncThunk<
-  GetCharactersBasicData_characters['results']
+  CharacterSliceShape['charactersBasicData']
 >('characters/getAllBasicData', async (_, thunkAPI) => {
+  console.log('aah!');
   try {
     const characters = await CharactersService.getAllCharactersBasicData();
-    return characters;
+    if (characters) {
+      return characters.filter(
+        (character) => character !== null
+      ) as CharacterSliceShape['charactersBasicData'];
+    }
+    console.log(characters);
+    return [];
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
   }
@@ -24,21 +32,29 @@ const charactersSlice = createSlice({
   name: 'characters',
   initialState,
   reducers: {
-    setFavoriteCharacter: (
-      { charactersBasicData },
-      {
-        payload: { id, favorite },
-      }: { payload: { id: string; favorite: boolean } }
-    ) => {
-      if (charactersBasicData && charactersBasicData.length > 0) {
-        const characterIndex = charactersBasicData.findIndex(
-          (character) => character?.id === id
-        );
-        if (characterIndex > -1) {
-          (charactersBasicData[characterIndex] as CharacterShape).favorite =
-            favorite;
-        }
-      }
+    // setFavoriteCharacter: (
+    //   { charactersBasicData },
+    //   {
+    //     payload: { id, favorite },
+    //   }: { payload: { id: string; favorite: boolean } }
+    // ) => {
+    //   if (charactersBasicData && charactersBasicData.length > 0) {
+    //     const characterIndex = charactersBasicData.findIndex(
+    //       (character) => character?.id === id
+    //     );
+    //     if (characterIndex > -1) {
+    //       (charactersBasicData[characterIndex] as CharacterShape).favorite =
+    //         favorite;
+    //     }
+    //   }
+    // },
+    setFavoriteCharacter: (state, { payload: id }: { payload: string }) => {
+      const favoriteRemoved = state.favorites.filter((favId) => favId !== id);
+      const favoriteAdded = [...state.favorites, id];
+      state.favorites = state.favorites.includes(id)
+        ? favoriteRemoved
+        : favoriteAdded;
+      console.log(state.favorites);
     },
   },
   extraReducers: (builder) => {
