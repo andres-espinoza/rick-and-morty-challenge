@@ -166,7 +166,7 @@ const AutocompleteMultiSelector = (
       // open
       sx={{
         minWidth: 300,
-        maxWidth: 300,
+        maxWidth: 500,
       }}
       onChange={(e, items, reason, details) => {
         // Pregunta si se seleccionó la opción 'Todos'
@@ -312,7 +312,7 @@ const AutocompleteMultiSelector = (
             size="small"
             variant="outlined"
             sx={{
-              width: '65% !important',
+              width: '80% !important',
             }}
             label={newRenderFunction(option)}
             {...getTagProps({ index })}

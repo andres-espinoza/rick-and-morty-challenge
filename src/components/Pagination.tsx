@@ -2,14 +2,32 @@ import * as React from 'react';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import { PaginationItem } from '@mui/material';
-import { Link } from 'react-router-dom';
+import useScrollReset from '../hooks/useScrollTop';
+// import { CharacterSliceShape } from '../store/slices/types';
 
 interface CustomPaginationProps {
-  currentPage: number;
   count: number;
+  page: number;
+  handleChange: (event: React.ChangeEvent<unknown>, value: number) => void;
 }
 
-const CustomPagination = ({ currentPage, count }: CustomPaginationProps) => {
+const CustomPagination = ({
+  count,
+  handleChange,
+  page,
+}: CustomPaginationProps) => {
+  // La data que se muestra en la pagina seleccionada
+  // const paginateData = (
+  //   page: number,
+  //   data: CharacterSliceShape['charactersBasicData'],
+  //   amountPerPage = 24
+  // ) => {
+  //   if (!data || data.length < 1) return [];
+  //   const from = amountPerPage * page - amountPerPage;
+  //   const to = amountPerPage * page;
+  //   return data.slice(from, to);
+  // };
+  useScrollReset(page);
   return (
     <Stack
       spacing={2}
@@ -18,12 +36,13 @@ const CustomPagination = ({ currentPage, count }: CustomPaginationProps) => {
       padding={5}
     >
       <Pagination
+        page={page}
+        onChange={handleChange}
         count={count === 0 ? 1 : count}
-        page={currentPage}
         renderItem={(item) => (
           <PaginationItem
-            component={Link}
-            to={`/characters${!item.page ? '' : `?page=${item.page}`}`}
+            // component={Link}
+            // to={`/characters${!item.page ? '' : `?page=${item.page}`}`}
             {...item}
           />
         )}

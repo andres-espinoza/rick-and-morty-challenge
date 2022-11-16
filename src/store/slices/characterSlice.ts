@@ -13,7 +13,6 @@ const initialState: CharacterSliceShape = {
 export const getCharactersBasicData = createAsyncThunk<
   CharacterSliceShape['charactersBasicData']
 >('characters/getAllBasicData', async (_, thunkAPI) => {
-  console.log('aah!');
   try {
     const characters = await CharactersService.getAllCharactersBasicData();
     if (characters) {
@@ -21,7 +20,6 @@ export const getCharactersBasicData = createAsyncThunk<
         (character) => character !== null
       ) as CharacterSliceShape['charactersBasicData'];
     }
-    console.log(characters);
     return [];
   } catch (error) {
     return thunkAPI.rejectWithValue(error);
@@ -54,7 +52,6 @@ const charactersSlice = createSlice({
       state.favorites = state.favorites.includes(id)
         ? favoriteRemoved
         : favoriteAdded;
-      console.log(state.favorites);
     },
   },
   extraReducers: (builder) => {

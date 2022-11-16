@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import AutocompleteMultiSelector from '../components/autocomplete/AutocompleteMultiSelector';
 import CustomCard from '../components/CustomCard';
 import CustomPagination from '../components/Pagination';
-import useQueryParams from '../hooks/useQueryParams';
+// import useQueryParams from '../hooks/useQueryParams';
 import { useAppSelector } from '../store';
 import { CharacterShape, CharacterSliceShape } from '../store/slices/types';
 
@@ -12,38 +12,46 @@ const CharactersView = () => {
     (state) => state.characters
   );
 
-  const queryParams = useQueryParams();
-  const currentPage = Number(queryParams.get('page')) || 1;
-
   const [charactersInPage, setCharactersInPage] = useState<
     CharacterSliceShape['charactersBasicData']
   >([]);
+
+  const [page, setPage] = useState(1);
 
   const [count, setCount] = useState(
     Math.floor(charactersBasicData.length / 24)
   );
 
+  const handleChangePage = (
+    _event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setPage(value);
+  };
+
+  // La data que se muestra en la pagina seleccionada
   const paginateData = (
-    page: number,
+    pag: number,
     data: CharacterSliceShape['charactersBasicData'],
     amountPerPage = 24
   ) => {
     if (!data || data.length < 1) return [];
-    const from = amountPerPage * page - amountPerPage;
-    const to = amountPerPage * page;
+    const from = amountPerPage * pag - amountPerPage;
+    const to = amountPerPage * pag;
     return data.slice(from, to);
   };
 
   useEffect(() => {
     if (charactersBasicData) {
-      setCharactersInPage(paginateData(currentPage, charactersBasicData));
-      // setCount(Math.floor(charactersBasicData.length / 24));
+      setCharactersInPage(paginateData(page, charactersBasicData));
+      setCount(Math.floor(charactersBasicData.length / 24));
     } else {
-      setCharactersInPage(paginateData(currentPage, []));
-      // setCount(1);
+      setCharactersInPage(paginateData(page, []));
+      setCount(1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage]);
+  }, [page]);
+
   return (
     <>
       <Typography
@@ -71,10 +79,10 @@ const CharactersView = () => {
             (charactersBasicData && data.length === 0) ||
             (charactersBasicData && data.length === charactersBasicData.length)
           ) {
-            setCharactersInPage(paginateData(currentPage, charactersBasicData));
+            setCharactersInPage(paginateData(page, charactersBasicData));
             setCount(Math.floor(charactersBasicData.length / 24));
           } else {
-            setCharactersInPage(paginateData(currentPage, data));
+            setCharactersInPage(paginateData(1, data));
             setCount(Math.floor(data.length / 24));
           }
         }}
@@ -84,7 +92,6 @@ const CharactersView = () => {
           container
           rowSpacing={4}
           marginTop={4}
-          // columnSpacing={{ xs: 1, sm: 2, md: 3 }}
         >
           {charactersInPage && charactersInPage.length > 0
             ? charactersInPage.map((character) => (
@@ -111,12 +118,9 @@ const CharactersView = () => {
             : null}
         </Grid>
         <CustomPagination
-          currentPage={currentPage}
-          // count={
-          //   charactersInPage ? Math.floor(charactersInPage.length / 24) : 0
-          // }
           count={count}
-          // handleChange={handlePaginationChange}
+          handleChange={handleChangePage}
+          page={page}
         />
       </Box>
     </>
