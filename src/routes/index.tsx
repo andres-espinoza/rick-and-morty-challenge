@@ -12,8 +12,8 @@ const Loadable = (Component: ElementType) => (props: any) =>
     </Suspense>
   );
 
-const CharactersView = Loadable(lazy(() => import('../views/CharactersView')));
-const EpisodesView = Loadable(lazy(() => import('../views/EpisodesView')));
+const CharactersView = Loadable(lazy(() => import('../views/CharacterView')));
+const EpisodesView = Loadable(lazy(() => import('../views/EpisodeView')));
 const FavoritesView = Loadable(lazy(() => import('../views/FavoritesView')));
 const Home = Loadable(lazy(() => import('../views/Home')));
 
