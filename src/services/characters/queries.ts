@@ -1,15 +1,33 @@
 import { gql } from '@apollo/client';
 
-export const GET_CHARACTERS_BASIC_DATA = gql`
-  query GetCharactersBasicData($page: Int!) {
+export const GET_CHARACTERS_BY_PAGE = gql`
+  query GetCharactersByPage($page: Int) {
     characters(page: $page) {
       info {
         next
+        count
+        pages
       }
       results {
         name
         id
         image
+      }
+    }
+  }
+`;
+
+export const GET_CHARACTERS_BY_NAME = gql`
+  query GetCharactersByName($name: String!) {
+    characters(filter: { name: $name }) {
+      results {
+        name
+        id
+        image
+      }
+      info {
+        pages
+        count
       }
     }
   }

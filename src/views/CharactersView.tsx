@@ -1,27 +1,35 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Box, Grid, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import AutocompleteMultiSelector from '../components/autocomplete/AutocompleteMultiSelector';
 import CustomCard from '../components/CustomCard';
+import CustomInput from '../components/CustomInput';
 import CustomPagination from '../components/Pagination';
+import CharactersService, { CharactersByPage } from '../services/characters';
 // import useQueryParams from '../hooks/useQueryParams';
 import { useAppSelector } from '../store';
 import { CharacterShape, CharacterSliceShape } from '../store/slices/types';
 
+interface CharactersDisplayed extends CharactersByPage {
+  userSearching: boolean;
+}
+
 const CharactersView = () => {
-  const { charactersBasicData, favorites } = useAppSelector(
-    (state) => state.characters
-  );
+  const { favorites } = useAppSelector((state) => state.characters);
 
-  const [charactersInPage, setCharactersInPage] = useState<
-    CharacterSliceShape['charactersBasicData']
-  >([]);
+  const [loading, setLoading] = useState(false);
 
+  // Lógica de personajes mostrados
+  const [charactersDisplayed, setCharactersDisplayed] =
+    useState<CharactersDisplayed>({
+      characters: [],
+      totalAmountOfCharacters: 0,
+      totalAmountOfPages: 0,
+      userSearching: false,
+    });
+
+  // Lógica de paginación
   const [page, setPage] = useState(1);
-
-  const [count, setCount] = useState(
-    Math.floor(charactersBasicData.length / 24)
-  );
-
   const handleChangePage = (
     _event: React.ChangeEvent<unknown>,
     value: number
@@ -29,28 +37,79 @@ const CharactersView = () => {
     setPage(value);
   };
 
-  // La data que se muestra en la pagina seleccionada
-  const paginateData = (
-    pag: number,
-    data: CharacterSliceShape['charactersBasicData'],
-    amountPerPage = 24
+  //! En progreso
+  const handleSearchCharacter = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    if (!data || data.length < 1) return [];
-    const from = amountPerPage * pag - amountPerPage;
-    const to = amountPerPage * pag;
-    return data.slice(from, to);
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    (async () => {
+      setLoading(true);
+      setCharactersDisplayed((prevState) => ({
+        ...prevState,
+        userSearching: true,
+      }));
+
+      try {
+        if (event.target.value !== '') {
+          const matchingCharacters =
+            await CharactersService.GetCharactersByName(event.target.value);
+          setCharactersDisplayed((prevState) => ({
+            ...prevState,
+            ...matchingCharacters,
+          }));
+        } else {
+          setCharactersDisplayed((prevState) => ({
+            ...prevState,
+            userSearching: false,
+          }));
+          setPage(1);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      setLoading(false);
+    })();
+  };
+  // const paginateData = (
+  //   pag: number,
+  //   data: CharactersByPage['characters'],
+  //   dataPerPage = 20
+  // ) => {
+  //   if (!data || data.length < 1) return [];
+  //   const from = dataPerPage * pag - dataPerPage;
+  //   const to = dataPerPage * pag;
+  //   return data.slice(from, to);
+  // };
+
+  // const initCharacters = useCallback(async () => {
+  //   const charactersToDisplay = await CharactersService.getCharactersByPage(
+  //     page
+  //   );
+  // }, [page]);
+
+  const getCharacterUsingPagination = async () => {
+    const charactersToDisplay = await CharactersService.getCharactersByPage(
+      page
+    );
+    setCharactersDisplayed((prevState) => ({
+      ...prevState,
+      ...charactersToDisplay,
+    }));
   };
 
-  useEffect(() => {
-    if (charactersBasicData) {
-      setCharactersInPage(paginateData(page, charactersBasicData));
-      setCount(Math.floor(charactersBasicData.length / 24));
-    } else {
-      setCharactersInPage(paginateData(page, []));
-      setCount(1);
-    }
+  useEffect(
+    () => {
+      if (!charactersDisplayed.userSearching) {
+        setLoading(true);
+        getCharacterUsingPagination().catch((error: Error) =>
+          console.error(error?.message)
+        );
+        setLoading(false);
+      }
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+    [page]
+  );
 
   return (
     <>
@@ -62,7 +121,9 @@ const CharactersView = () => {
         {' '}
         Characters View
       </Typography>
-      <AutocompleteMultiSelector
+      <CustomInput handleChange={handleSearchCharacter} />
+      {loading ? <h2>LOADING!</h2> : null}
+      {/* <AutocompleteMultiSelector
         dataSource={charactersBasicData || []}
         selectedData={[]}
         renderFunc={(character: CharacterShape) => {
@@ -86,15 +147,15 @@ const CharactersView = () => {
             setCount(Math.floor(data.length / 24));
           }
         }}
-      />
+      /> */}
       <Box sx={{ width: '100%' }}>
         <Grid
           container
           rowSpacing={4}
           marginTop={4}
         >
-          {charactersInPage && charactersInPage.length > 0
-            ? charactersInPage.map((character) => (
+          {charactersDisplayed.characters.length > 0
+            ? charactersDisplayed.characters.map((character) => (
                 <Grid
                   item
                   xs={12}
@@ -118,7 +179,7 @@ const CharactersView = () => {
             : null}
         </Grid>
         <CustomPagination
-          count={count}
+          count={charactersDisplayed.totalAmountOfPages}
           handleChange={handleChangePage}
           page={page}
         />

@@ -4,18 +4,26 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetCharactersBasicData
+// GraphQL query operation: GetCharactersByPage
 // ====================================================
 
-export interface GetCharactersBasicData_characters_info {
+export interface GetCharactersByPage_characters_info {
   __typename: "Info";
   /**
    * Number of the next page (if it exists)
    */
   next: number | null;
+  /**
+   * The length of the response.
+   */
+  count: number | null;
+  /**
+   * The amount of pages.
+   */
+  pages: number | null;
 }
 
-export interface GetCharactersBasicData_characters_results {
+export interface GetCharactersByPage_characters_results {
   __typename: "Character";
   /**
    * The name of the character.
@@ -32,19 +40,19 @@ export interface GetCharactersBasicData_characters_results {
   image: string | null;
 }
 
-export interface GetCharactersBasicData_characters {
+export interface GetCharactersByPage_characters {
   __typename: "Characters";
-  info: GetCharactersBasicData_characters_info | null;
-  results: (GetCharactersBasicData_characters_results | null)[] | null;
+  info: GetCharactersByPage_characters_info | null;
+  results: (GetCharactersByPage_characters_results | null)[] | null;
 }
 
-export interface GetCharactersBasicData {
+export interface GetCharactersByPage {
   /**
    * Get the list of all characters
    */
-  characters: GetCharactersBasicData_characters | null;
+  characters: GetCharactersByPage_characters | null;
 }
 
-export interface GetCharactersBasicDataVariables {
-  page: number;
+export interface GetCharactersByPageVariables {
+  page?: number | null;
 }

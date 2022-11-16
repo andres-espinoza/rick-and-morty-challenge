@@ -1,27 +1,24 @@
-import { useCallback, useEffect } from 'react';
 import { useRoutes } from 'react-router-dom';
 import routes from './routes';
-import { useAppDispatch, useAppSelector } from './store';
-import { getCharactersBasicData } from './store/slices/characterSlice';
 
 const App = () => {
-  const dispatch = useAppDispatch();
-  const { loading, error, charactersBasicData } = useAppSelector(
-    (state) => state.characters
-  );
+  // const dispatch = useAppDispatch();
+  // const { loading, error, charactersBasicData } = useAppSelector(
+  //   (state) => state.characters
+  // );
 
-  const initCharacters = useCallback(async () => {
-    await dispatch(getCharactersBasicData());
-  }, [dispatch]);
+  // const initCharacters = useCallback(async () => {
+  //   await dispatch(getCharactersBasicData());
+  // }, [dispatch]);
 
-  useEffect(() => {
-    if (!charactersBasicData.length) {
-      initCharacters().catch((err) => console.log(err));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   if (!charactersBasicData.length) {
+  //     initCharacters().catch((err) => console.log(err));
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
   const content = useRoutes(routes);
-  return !loading && !error ? content : <h2>Something went wrong!</h2>;
+  return content;
 };
 
 export default App;
