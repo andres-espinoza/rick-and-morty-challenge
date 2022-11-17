@@ -3,7 +3,7 @@ import { GetCharactersByPage_characters_results } from './__generated__/GetChara
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Character extends GetCharactersByPage_characters_results {}
 
-export interface CharactersByPage {
+export interface CharactersPerPage {
   totalAmountOfPages: number;
   characters: Character[];
 }
