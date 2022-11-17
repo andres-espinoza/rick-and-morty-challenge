@@ -2,7 +2,6 @@ import {
   Card,
   CardContent,
   Stack,
-  // Grid,
   Box,
   Typography,
   Skeleton,
@@ -78,6 +77,20 @@ const CharacterDetails = () => {
         position: 'relative',
       }}
     >
+      {/* <IconButton
+        aria-label="go back"
+        onClick={() => navigate(-1)}
+        sx={{
+          position: 'absolute',
+          top: '7px',
+          left: '7px',
+        }}
+      >
+        <GoBackIcon
+          color="primary"
+          fontSize="large"
+        />
+      </IconButton> */}
       <CardContent>
         <FavoriteButton
           handleClick={handleClickFavorite}

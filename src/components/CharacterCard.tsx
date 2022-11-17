@@ -7,7 +7,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../store';
 import { setFavoriteCharacter } from '../store/slices/characterSlice';
 import FavoriteButton from './FavoriteButton';
@@ -101,21 +101,23 @@ const CharacterCard = ({
                   boxShadow: 1,
                 }}
               >
-                <Typography
-                  variant="subtitle2"
-                  width="max-content"
-                  fontSize={{
-                    sx: id.length === 3 ? '0.3rem' : '0.4rem',
-                    sm: id.length === 3 ? '0.7rem' : '0.9rem',
-                  }}
-                  fontWeight={700}
-                  sx={{
-                    textAlign: 'center',
-                    minWidth: '33px',
-                  }}
-                >
-                  {`#${id}`}
-                </Typography>
+                <RouterLink to={`/characters/details/${id}`}>
+                  <Typography
+                    variant="subtitle2"
+                    width="max-content"
+                    fontSize={{
+                      sx: id.length === 3 ? '0.3rem' : '0.4rem',
+                      sm: id.length === 3 ? '0.7rem' : '0.9rem',
+                    }}
+                    fontWeight={700}
+                    sx={{
+                      textAlign: 'center',
+                      minWidth: '33px',
+                    }}
+                  >
+                    {`#${id}`}
+                  </Typography>
+                </RouterLink>
               </Box>
             </Button>
           </Box>
@@ -136,17 +138,19 @@ const CharacterCard = ({
               favorite={favorite}
               handleClick={handleClickFavorite}
             />
-            <Typography
-              variant="subtitle2"
-              width="auto"
-              textAlign="center"
-              fontSize={{
-                xs: '0.65rem',
-                sm: '0.8rem',
-              }}
-            >
-              {name}
-            </Typography>
+            <RouterLink to={`/characters/details/${id}`}>
+              <Typography
+                variant="subtitle2"
+                width="auto"
+                textAlign="center"
+                fontSize={{
+                  xs: '0.65rem',
+                  sm: '0.8rem',
+                }}
+              >
+                {name}
+              </Typography>
+            </RouterLink>
           </Stack>
         </>
       </CardContent>
