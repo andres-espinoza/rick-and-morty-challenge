@@ -5,3 +5,5 @@ export { default as SearchEpisodeIcon } from '@mui/icons-material/ScreenSearchDe
 export { default as ChevronLeft } from '@mui/icons-material/ChevronLeft';
 export { default as MenuIcon } from '@mui/icons-material/Menu';
 export { default as ExpandIcon } from '@mui/icons-material/ExpandMore';
+export { default as LinkedInIcon } from '@mui/icons-material/LinkedIn';
+export { default as GitHubIcon } from '@mui/icons-material/GitHub';
