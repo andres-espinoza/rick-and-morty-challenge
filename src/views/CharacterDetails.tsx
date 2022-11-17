@@ -63,15 +63,16 @@ const CharacterDetails = () => {
   return (
     <Card
       sx={{
-        minWidth: {
+        width: {
           xs: '260px',
+          sm: '400px',
+          md: '700px',
           lg: '800px',
         },
         padding: {
           xs: '0.5rem',
           lg: '1rem',
         },
-        maxWidth: '800px',
         marginX: 'auto',
         position: 'relative',
       }}
@@ -87,28 +88,42 @@ const CharacterDetails = () => {
             lg: 'column',
           }}
         >
-          <Stack
+          <Stack // * Image vs Text Stack
             flexDirection={{
+              xs: 'column',
+              md: 'row',
               lg: 'row',
             }}
             justifyContent={{
+              sx: 'center',
               lg: 'space-around',
             }}
             alignItems={{
+              xs: 'center',
               lg: 'center',
+            }}
+            gap={{
+              xs: 3,
             }}
           >
             <Box
               sx={{
                 aspectRatio: '1/1',
                 height: {
+                  xs: '200px',
+                  md: '300px',
                   lg: '350px',
                 },
                 width: {
+                  xs: '200px',
+                  md: '300px',
                   lg: '350px',
                 },
                 borderRadius: '50%',
                 overflow: 'hidden',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
             >
               {fullCharacter.image && fullCharacter.image !== '' ? (
@@ -160,6 +175,7 @@ const CharacterDetails = () => {
                 </Typography>
                 <Typography
                   fontWeight={{
+                    xs: 500,
                     lg: 500,
                   }}
                   // color={palette.secondary.contrastText}
@@ -185,6 +201,7 @@ const CharacterDetails = () => {
                 </Typography>
                 <Typography
                   fontWeight={{
+                    xs: 500,
                     lg: 500,
                   }}
                   // color={palette.secondary.contrastText}
@@ -210,6 +227,7 @@ const CharacterDetails = () => {
                 </Typography>
                 <Typography
                   fontWeight={{
+                    xs: 500,
                     lg: 500,
                   }}
                 >
@@ -234,6 +252,7 @@ const CharacterDetails = () => {
                 </Typography>
                 <Typography
                   fontWeight={{
+                    xs: 500,
                     lg: 500,
                   }}
                 >
@@ -258,6 +277,7 @@ const CharacterDetails = () => {
                 </Typography>
                 <Typography
                   fontWeight={{
+                    xs: 500,
                     lg: 500,
                   }}
                 >
@@ -284,6 +304,7 @@ const CharacterDetails = () => {
                 </Typography>
                 <Typography
                   fontWeight={{
+                    xs: 500,
                     lg: 500,
                   }}
                 >
@@ -292,7 +313,7 @@ const CharacterDetails = () => {
                     : 'Unknown'}
                 </Typography>
               </Stack>
-              <Stack // * ---  LOCATION ---
+              <Stack // * ---  STATUS ---
                 flexDirection={{
                   lg: 'column',
                 }}
@@ -310,6 +331,7 @@ const CharacterDetails = () => {
                 </Typography>
                 <Typography
                   fontWeight={{
+                    xs: 500,
                     lg: 500,
                   }}
                 >
@@ -343,9 +365,7 @@ const CharacterDetails = () => {
               >
                 <Typography
                   color={palette.text.primary}
-                  fontWeight={{
-                    lg: 500,
-                  }}
+                  fontWeight={500}
                 >
                   {`You can find it in ${
                     fullCharacter.episode.length > 1
@@ -357,7 +377,7 @@ const CharacterDetails = () => {
               {fullCharacter.episode.map((episode) => {
                 if (episode?.name && episode.episode)
                   return (
-                    <AccordionDetails>
+                    <AccordionDetails key={episode.name}>
                       <Stack
                         flexDirection={{
                           lg: 'row',
@@ -367,21 +387,21 @@ const CharacterDetails = () => {
                         }}
                         gap={0.6}
                       >
-                        <Typography>&loz;</Typography>
                         <Typography
-                          sx={{
-                            width: 'max-content',
-                          }}
+                        // sx={{
+                        //   width: 'max-content',
+                        // }}
                         >
-                          {episodeTextFormatter(episode.episode)}:
+                          &loz; {episodeTextFormatter(episode.episode)}:
                         </Typography>
                         <Typography
                           fontWeight={{
+                            xs: 500,
                             lg: 500,
                           }}
-                          sx={{
-                            width: 'max-content',
-                          }}
+                          // sx={{
+                          //   width: 'max-content',
+                          // }}
                         >
                           {episode.name}
                         </Typography>
