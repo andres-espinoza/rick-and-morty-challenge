@@ -13,15 +13,25 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import FavoriteButton from '../components/FavoriteButton';
 import { ExpandIcon } from '../components/icons';
 import CharacterService from '../services/characters';
 import { FullCharacter } from '../services/characters/types';
+import { useAppDispatch, useAppSelector } from '../store';
+import { setFavoriteCharacter } from '../store/slices/characterSlice';
 import { BorderRadius } from '../theme';
 import episodeTextFormatter from '../utils/episodeTextFormatter';
 
 const CharacterDetails = () => {
   const { characterId } = useParams();
   const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
+  const handleClickFavorite = () => {
+    if (characterId) dispatch(setFavoriteCharacter(characterId));
+  };
+  const {
+    favorites: { characters: favCharacters },
+  } = useAppSelector((state) => state.favorite);
   const [fullCharacter, setFullCharacter] = useState<FullCharacter>({
     name: null,
     image: null,
@@ -63,9 +73,15 @@ const CharacterDetails = () => {
         },
         maxWidth: '800px',
         marginX: 'auto',
+        position: 'relative',
       }}
     >
       <CardContent>
+        <FavoriteButton
+          handleClick={handleClickFavorite}
+          favorite={favCharacters.includes(characterId || '-1')}
+          typeComponent="CharacterDetails"
+        />
         <Stack
           flexDirection={{
             lg: 'column',
