@@ -107,7 +107,7 @@ const CharacterView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, displayCharacters.userSearching]);
 
-  // TODO: Mejorar el Loader
+  // if (loading) return <CircularProgress />;
   return (
     <>
       <Typography

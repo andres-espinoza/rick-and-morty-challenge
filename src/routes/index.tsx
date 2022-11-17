@@ -3,22 +3,24 @@
 /* eslint-disable react/display-name */ // => pide un display name para el Component del Suspense
 import { Suspense, lazy, ElementType } from 'react';
 import { RouteObject } from 'react-router-dom';
+import Loader from '../components/Loader';
 import MainContainer from '../layouts/MainContainer';
 
 const Loadable = (Component: ElementType) => (props: any) =>
   (
-    <Suspense fallback={<h4>Cargando...</h4>}>
+    <Suspense fallback={<Loader />}>
       <Component {...props} />
     </Suspense>
   );
 
 const CharactersView = Loadable(lazy(() => import('../views/CharacterView')));
 const EpisodesView = Loadable(lazy(() => import('../views/EpisodeView')));
-const FavoritesView = Loadable(lazy(() => import('../views/FavoritesView')));
+// const FavoritesView = Loadable(lazy(() => import('../views/FavoritesView')));
 const Home = Loadable(lazy(() => import('../views/Home')));
 const CharacterDetails = Loadable(
   lazy(() => import('../views/CharacterDetails'))
 );
+const EpisodeDetails = Loadable(lazy(() => import('../views/EpisodeDetails')));
 
 const NotFound = Loadable(lazy(() => import('../views/NotFound')));
 
@@ -42,11 +44,14 @@ const routes: RouteObject[] = [
         path: 'episodes',
         element: <EpisodesView />,
       },
-
       {
-        path: 'favorites',
-        element: <FavoritesView />,
+        path: 'episodes/details/:episodeId',
+        element: <EpisodeDetails />,
       },
+      // {
+      //   path: 'favorites',
+      //   element: <FavoritesView />,
+      // },
     ],
   },
   {

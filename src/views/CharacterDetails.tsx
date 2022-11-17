@@ -12,9 +12,10 @@ import {
   useTheme,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link as RouterLink } from 'react-router-dom';
 import FavoriteButton from '../components/FavoriteButton';
 import { ExpandIcon } from '../components/icons';
+import Loader from '../components/Loader';
 import CharacterService from '../services/characters';
 import { FullCharacter } from '../services/characters/types';
 import { useAppDispatch, useAppSelector } from '../store';
@@ -59,7 +60,7 @@ const CharacterDetails = () => {
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  if (loading) return <h2>LOADING...</h2>;
+  if (loading) return <Loader />;
   return (
     <Card
       sx={{
@@ -88,7 +89,7 @@ const CharacterDetails = () => {
             lg: 'column',
           }}
         >
-          <Stack // * Image vs Text Stack
+          <Stack // * IMAGE VS TEXT STACK
             flexDirection={{
               xs: 'column',
               md: 'row',
@@ -171,7 +172,7 @@ const CharacterDetails = () => {
                     lg: 400,
                   }}
                 >
-                  &loz; Character&apos;s full name:
+                  &loz; Character&apos;s Full Name:
                 </Typography>
                 <Typography
                   fontWeight={{
@@ -340,7 +341,7 @@ const CharacterDetails = () => {
               </Stack>
             </Stack>
           </Stack>
-          {fullCharacter.episode.length > 0 && (
+          {fullCharacter.episode.length > 0 && fullCharacter.episode[0] && (
             <Accordion
               sx={{
                 marginTop: 3,
@@ -367,7 +368,7 @@ const CharacterDetails = () => {
                   color={palette.text.primary}
                   fontWeight={500}
                 >
-                  {`You can find it in ${
+                  {`This character appears in ${
                     fullCharacter.episode.length > 1
                       ? `${fullCharacter.episode.length} episodes`
                       : 'this episode'
@@ -375,9 +376,9 @@ const CharacterDetails = () => {
                 </Typography>
               </AccordionSummary>
               {fullCharacter.episode.map((episode) => {
-                if (episode?.name && episode.episode)
+                if (episode?.name && episode.episode && episode?.id)
                   return (
-                    <AccordionDetails key={episode.name}>
+                    <AccordionDetails key={episode.id}>
                       <Stack
                         flexDirection={{
                           lg: 'row',
@@ -387,24 +388,19 @@ const CharacterDetails = () => {
                         }}
                         gap={0.6}
                       >
-                        <Typography
-                        // sx={{
-                        //   width: 'max-content',
-                        // }}
-                        >
+                        <Typography>
                           &loz; {episodeTextFormatter(episode.episode)}:
                         </Typography>
-                        <Typography
-                          fontWeight={{
-                            xs: 500,
-                            lg: 500,
-                          }}
-                          // sx={{
-                          //   width: 'max-content',
-                          // }}
-                        >
-                          {episode.name}
-                        </Typography>
+                        <RouterLink to={`/episodes/details/${episode.id}`}>
+                          <Typography
+                            fontWeight={{
+                              xs: 500,
+                              lg: 500,
+                            }}
+                          >
+                            {episode.name}
+                          </Typography>
+                        </RouterLink>
                       </Stack>
                     </AccordionDetails>
                   );
