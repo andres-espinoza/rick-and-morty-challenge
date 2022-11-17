@@ -1,7 +1,7 @@
 import {
   SearchEpisodeIcon,
   SearchCharacterIcon,
-  SolidFavoriteIcon,
+  // SolidFavoriteIcon,
 } from '../components/icons';
 
 interface ViewItem {
@@ -22,11 +22,11 @@ const navigationViews: ViewItem[] = [
     path: '/episodes',
     icon: <SearchEpisodeIcon />,
   },
-  {
-    viewName: 'Favorites',
-    path: '/favorites',
-    icon: <SolidFavoriteIcon />,
-  },
+  // {
+  //   viewName: 'Favorites',
+  //   path: '/favorites',
+  //   icon: <SolidFavoriteIcon />,
+  // },
 ];
 
 export default navigationViews;
