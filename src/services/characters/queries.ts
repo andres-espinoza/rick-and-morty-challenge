@@ -38,6 +38,7 @@ export const GET_ALL_DATA_SINGLE_CHARACTER = gql`
   query GetAllDataSingleCharacter($id: ID!) {
     character(id: $id) {
       name
+      image
       status
       species
       type
@@ -48,12 +49,11 @@ export const GET_ALL_DATA_SINGLE_CHARACTER = gql`
         dimension
       }
       location {
-        id
         name
         type
       }
-      image
       episode {
+        id
         name
         episode
       }
