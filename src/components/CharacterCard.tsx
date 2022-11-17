@@ -3,7 +3,6 @@ import {
   Button,
   Card,
   CardContent,
-  IconButton,
   Stack,
   Typography,
   useTheme,
@@ -11,7 +10,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../store';
 import { setFavoriteCharacter } from '../store/slices/characterSlice';
-import { OutlinedFavoriteIcon, SolidFavoriteIcon } from './icons';
+import FavoriteButton from './FavoriteButton';
 
 export interface CharacterCardProps {
   name: string;
@@ -131,26 +130,10 @@ const CharacterCard = ({
             width="100%"
             spacing={2}
           >
-            <IconButton
-              aria-label="add to favorites"
-              onClick={handleClickFavorite}
-            >
-              {favorite ? (
-                <SolidFavoriteIcon
-                  color="primary"
-                  sx={{
-                    fontSize: 30,
-                  }}
-                />
-              ) : (
-                <OutlinedFavoriteIcon
-                  color="primary"
-                  sx={{
-                    fontSize: 30,
-                  }}
-                />
-              )}
-            </IconButton>
+            <FavoriteButton
+              favorite={favorite}
+              handleClick={handleClickFavorite}
+            />
             <Typography
               variant="subtitle2"
               width="auto"

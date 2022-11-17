@@ -1,14 +1,8 @@
-import {
-  Card,
-  CardContent,
-  IconButton,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Card, CardContent, Stack, Typography } from '@mui/material';
 import { useAppDispatch } from '../store';
 import { setFavoriteEpisode } from '../store/slices/characterSlice';
 import episodeTextFormatter from '../utils/episodeTextFormatter';
-import { OutlinedFavoriteIcon, SolidFavoriteIcon } from './icons';
+import FavoriteButton from './FavoriteButton';
 
 interface EpisodeCardProps {
   episode: string | null;
@@ -75,31 +69,11 @@ const EpisodeCard = ({ episode, name, id, favorite }: EpisodeCardProps) => {
             {name}
           </Typography>
         </Stack>
-        <IconButton
-          aria-label="add to favorites"
-          onClick={handleClick}
-          sx={{
-            position: 'absolute',
-            bottom: '5px',
-            right: '5px',
-          }}
-        >
-          {favorite ? (
-            <SolidFavoriteIcon
-              color="primary"
-              sx={{
-                fontSize: 30,
-              }}
-            />
-          ) : (
-            <OutlinedFavoriteIcon
-              color="primary"
-              sx={{
-                fontSize: 30,
-              }}
-            />
-          )}
-        </IconButton>
+        <FavoriteButton
+          favorite={favorite}
+          handleClick={handleClick}
+          typeComponent="EpisodeCard"
+        />
       </CardContent>
     </Card>
   );
