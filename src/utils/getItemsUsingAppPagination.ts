@@ -3,7 +3,6 @@ const getItemsUsingAppPagination = <T>(
   data: T[],
   amountPerPage = 20
 ): T[] => {
-  console.log('data para slice: ', data);
   if (!data || data.length < 1) return [];
   const from = amountPerPage * pag - amountPerPage;
   const to = amountPerPage * pag;
