@@ -1,13 +1,18 @@
 import { ApolloQueryResult } from '@apollo/client';
 import { apolloClient } from '../../graphql';
 import apolloErrorChecker from '../apolloErrorChecker';
-import { GET_EPISODES_BY_NAME, GET_EPISODES_BY_PAGE } from './queries';
-import { EpisodesPerPage } from './types';
+import {
+  GET_ALL_DATA_SINGLE_EPISODE,
+  GET_EPISODES_BY_NAME,
+  GET_EPISODES_BY_PAGE,
+} from './queries';
+import { EpisodesPerPage, FullEpisode } from './types';
+import { GetAllDataSingleEpisode } from './__generated__/GetAllDataSingleEpisode';
 import { GetEpisodesByName } from './__generated__/GetEpisodesByName';
 import { GetEpisodesByPage } from './__generated__/GetEpisodesByPage';
 
 class EpisodeService {
-  async getEpisodesByPage(page = 1) {
+  async getEpisodesByPage(page = 1): Promise<EpisodesPerPage> {
     try {
       const response: ApolloQueryResult<GetEpisodesByPage> =
         await apolloClient.query({
@@ -94,6 +99,38 @@ class EpisodeService {
       return await this.GetEpisodesByName(name, info.next, storage);
     } catch (error) {
       console.error(`Error getting episodes by ${name}`);
+      throw error;
+    }
+  }
+
+  async GetAllDataSingleEpisodeById(id: string): Promise<FullEpisode> {
+    try {
+      const response: ApolloQueryResult<GetAllDataSingleEpisode> =
+        await apolloClient.query({
+          query: GET_ALL_DATA_SINGLE_EPISODE,
+          variables: { id },
+        });
+
+      const data = apolloErrorChecker<GetAllDataSingleEpisode>(
+        response,
+        'single character'
+      );
+
+      if (!data?.episode) {
+        throw new Error(`There is no data of episode with ID: ${id}`);
+      }
+      const {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        episode: { name, episode, air_date, characters },
+      } = data;
+      return {
+        name,
+        episode,
+        air_date,
+        characters,
+      };
+    } catch (error) {
+      console.error(`Error getting episode with ID: ${id}`);
       throw error;
     }
   }

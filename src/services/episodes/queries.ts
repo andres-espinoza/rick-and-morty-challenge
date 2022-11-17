@@ -32,3 +32,18 @@ export const GET_EPISODES_BY_NAME = gql`
     }
   }
 `;
+
+export const GET_ALL_DATA_SINGLE_EPISODE = gql`
+  query GetAllDataSingleEpisode($id: ID!) {
+    episode(id: $id) {
+      name
+      episode
+      air_date
+      characters {
+        name
+        image
+        id
+      }
+    }
+  }
+`;
