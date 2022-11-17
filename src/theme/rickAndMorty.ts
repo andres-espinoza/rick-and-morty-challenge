@@ -25,7 +25,6 @@ const rickAndMorty: ThemeOptions = {
     },
     text: {
       primary: '#18424A',
-      // secondary: '#636D70',
       disabled: '#A1A1A1',
     },
     action: {

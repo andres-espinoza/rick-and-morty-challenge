@@ -1,13 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import AdbIcon from '@mui/icons-material/Adb';
 import { Button, useTheme } from '@mui/material';
 import { Link, NavLink } from 'react-router-dom';
 import navigationViews from '../routes/navigationViews';
@@ -16,18 +10,6 @@ import RickAndMortyLogo from './icons/RickAndMortyLogo';
 
 const Navbar = () => {
   const { palette } = useTheme();
-
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
-
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
 
   return (
     <AppBar

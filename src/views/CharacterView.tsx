@@ -68,7 +68,7 @@ const CharacterView = () => {
           setPage(1);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
       setLoading(false);
     })();
@@ -111,11 +111,11 @@ const CharacterView = () => {
   return (
     <>
       <Typography
-        variant="h2"
+        variant="h3"
         width="100%"
         textAlign="center"
       >
-        Character View
+        Character Section
       </Typography>
       <CustomInput handleChange={handleSearchCharacter} />
       <ProgressBar loading={loading} />

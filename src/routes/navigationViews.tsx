@@ -22,11 +22,6 @@ const navigationViews: ViewItem[] = [
     path: '/episodes',
     icon: <SearchEpisodeIcon />,
   },
-  // {
-  //   viewName: 'Favorites',
-  //   path: '/favorites',
-  //   icon: <SolidFavoriteIcon />,
-  // },
 ];
 
 export default navigationViews;

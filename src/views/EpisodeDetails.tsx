@@ -118,7 +118,6 @@ export const EpisodeDetails = () => {
                   xs: 500,
                   lg: 500,
                 }}
-                // color={palette.secondary.contrastText}
               >
                 {fullEpisode.name ? fullEpisode.name : 'Unknown'}
               </Typography>
@@ -144,7 +143,6 @@ export const EpisodeDetails = () => {
                   xs: 500,
                   lg: 500,
                 }}
-                // color={palette.secondary.contrastText}
               >
                 {fullEpisode?.air_date ? fullEpisode.air_date : 'Unknown'}
               </Typography>

@@ -8,22 +8,6 @@ const initialState: CharacterSliceShape = {
   },
 };
 
-// export const getCharactersBasicData = createAsyncThunk<
-//   CharacterSliceShape['charactersBasicData']
-// >('characters/getAllBasicData', async (_, thunkAPI) => {
-//   try {
-//     const characters = await CharacterService.getAllCharactersBasicData();
-//     if (characters) {
-//       return characters.filter(
-//         (character) => character !== null
-//       ) as CharacterSliceShape['charactersBasicData'];
-//     }
-//     return [];
-//   } catch (error) {
-//     return thunkAPI.rejectWithValue(error);
-//   }
-// });
-
 const favoriteSlice = createSlice({
   name: 'favorite',
   initialState,
@@ -50,20 +34,6 @@ const favoriteSlice = createSlice({
         : favoriteAdded;
     },
   },
-  // extraReducers: (builder) => {
-  //   builder
-  //     .addCase(getCharactersBasicData.pending, (state) => {
-  //       state.loading = true;
-  //     })
-  //     .addCase(getCharactersBasicData.fulfilled, (state, { payload }) => {
-  //       state.charactersBasicData = payload;
-  //       state.loading = false;
-  //     })
-  //     .addCase(getCharactersBasicData.rejected, (state, { payload }) => {
-  //       state.error = payload as string;
-  //       state.loading = false;
-  //     });
-  // },
 });
 
 export const { setFavoriteCharacter, setFavoriteEpisode, hydrate } =
