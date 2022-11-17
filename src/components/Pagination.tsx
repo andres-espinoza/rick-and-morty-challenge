@@ -2,7 +2,7 @@ import * as React from 'react';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import { PaginationItem } from '@mui/material';
-import useScrollReset from '../hooks/useScrollTop';
+import useScrollTop from '../hooks/useScrollTop';
 // import { CharacterSliceShape } from '../store/slices/types';
 
 interface CustomPaginationProps {
@@ -27,7 +27,7 @@ const CustomPagination = ({
   //   const to = amountPerPage * page;
   //   return data.slice(from, to);
   // };
-  useScrollReset(page);
+  useScrollTop(page);
   return (
     <Stack
       spacing={2}
