@@ -11,7 +11,7 @@ interface CustomInputProps {
 
 const CustomInput = ({ handleChange, label = '' }: CustomInputProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, react-hooks/exhaustive-deps, @typescript-eslint/no-unsafe-call
-  const debounceHandleChange = useCallback(debounce(handleChange, 400), []);
+  const debounceHandleChange = useCallback(debounce(handleChange, 450), []);
 
   return (
     <TextField
