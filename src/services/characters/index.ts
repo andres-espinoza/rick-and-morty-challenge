@@ -12,7 +12,7 @@ import { GetCharactersByName } from './__generated__/GetCharactersByName';
 import { GetCharactersByPage } from './__generated__/GetCharactersByPage';
 
 class CharacterService {
-  async getCharactersByPage(page = 1) {
+  async getCharactersByPage(page = 1): Promise<CharactersPerPage> {
     try {
       const response: ApolloQueryResult<GetCharactersByPage> =
         await apolloClient.query({
