@@ -8,6 +8,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../store';
 import { setFavoriteCharacter } from '../store/slices/characterSlice';
 import { OutlinedFavoriteIcon, SolidFavoriteIcon } from './icons';
@@ -27,8 +28,13 @@ const CharacterCard = ({
 }: CharacterCardProps) => {
   const { palette } = useTheme();
   const dispatch = useAppDispatch();
-  const handleClick = () => {
+  const handleClickFavorite = () => {
     dispatch(setFavoriteCharacter(id));
+  };
+  const navigate = useNavigate();
+
+  const handleClickMoreDetails = () => {
+    navigate(`/characters/details/${id}`);
   };
   return (
     <Card
@@ -60,7 +66,7 @@ const CharacterCard = ({
             }}
           >
             <Button
-              onClick={() => console.log(id)}
+              onClick={handleClickMoreDetails}
               sx={{
                 padding: 0,
                 color: palette.text.primary,
@@ -127,7 +133,7 @@ const CharacterCard = ({
           >
             <IconButton
               aria-label="add to favorites"
-              onClick={handleClick}
+              onClick={handleClickFavorite}
             >
               {favorite ? (
                 <SolidFavoriteIcon

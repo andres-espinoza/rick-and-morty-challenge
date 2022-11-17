@@ -7,7 +7,7 @@ const episodeTextFormatter = (episodeText: string | null): string => {
     .split('E')
     .map((text) => text.replace(findFirstZero, ''));
 
-  return `Episode ${episodeNumber} of the season ${seasonNumber}`;
+  return `Episode ${episodeNumber} of season ${seasonNumber}`;
 };
 
 export default episodeTextFormatter;

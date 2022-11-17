@@ -4,3 +4,4 @@ export { default as SearchCharacterIcon } from '@mui/icons-material/PersonSearch
 export { default as SearchEpisodeIcon } from '@mui/icons-material/ScreenSearchDesktopRounded';
 export { default as ChevronLeft } from '@mui/icons-material/ChevronLeft';
 export { default as MenuIcon } from '@mui/icons-material/Menu';
+export { default as ExpandIcon } from '@mui/icons-material/ExpandMore';

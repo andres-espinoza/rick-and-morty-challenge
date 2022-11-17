@@ -1,8 +1,13 @@
 import { ApolloQueryResult } from '@apollo/client';
 import { apolloClient } from '../../graphql';
 import apolloErrorChecker from '../apolloErrorChecker';
-import { GET_CHARACTERS_BY_PAGE, GET_CHARACTERS_BY_NAME } from './queries';
-import { CharactersPerPage } from './types';
+import {
+  GET_CHARACTERS_BY_PAGE,
+  GET_CHARACTERS_BY_NAME,
+  GET_ALL_DATA_SINGLE_CHARACTER,
+} from './queries';
+import { CharactersPerPage, FullCharacter } from './types';
+import { GetAllDataSingleCharacter } from './__generated__/GetAllDataSingleCharacter';
 import { GetCharactersByName } from './__generated__/GetCharactersByName';
 import { GetCharactersByPage } from './__generated__/GetCharactersByPage';
 
@@ -97,6 +102,52 @@ class CharacterService {
       return await this.GetCharactersByName(name, info.next, storage);
     } catch (error) {
       console.error(`Error getting characters by ${name}`);
+      throw error;
+    }
+  }
+
+  async GetAllDataSingleCharacterById(id: string): Promise<FullCharacter> {
+    try {
+      const response: ApolloQueryResult<GetAllDataSingleCharacter> =
+        await apolloClient.query({
+          query: GET_ALL_DATA_SINGLE_CHARACTER,
+          variables: { id },
+        });
+
+      const data = apolloErrorChecker<GetAllDataSingleCharacter>(
+        response,
+        'single character'
+      );
+
+      if (!data?.character) {
+        throw new Error(`There is no data of character with ID: ${id}`);
+      }
+      const {
+        character: {
+          name,
+          image,
+          gender,
+          species,
+          type,
+          location,
+          episode,
+          origin,
+          status,
+        },
+      } = data;
+      return {
+        name,
+        image,
+        gender,
+        species,
+        type,
+        location,
+        episode,
+        origin,
+        status,
+      };
+    } catch (error) {
+      console.error(`Error getting character with ID: ${id}`);
       throw error;
     }
   }

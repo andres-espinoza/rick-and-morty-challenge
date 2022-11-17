@@ -8,6 +8,7 @@ const rickAndMorty: ThemeOptions = {
     },
     secondary: {
       main: '#BFDE42', // Verde
+      contrastText: '#30AB22',
     },
     success: {
       main: '#33A9C2',
@@ -23,7 +24,7 @@ const rickAndMorty: ThemeOptions = {
       paper: '#FFFFFF',
     },
     text: {
-      primary: '#193840',
+      primary: '#18424A',
       // secondary: '#636D70',
       disabled: '#A1A1A1',
     },

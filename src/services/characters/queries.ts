@@ -56,7 +56,6 @@ export const GET_ALL_DATA_SINGLE_CHARACTER = gql`
       episode {
         name
         episode
-        air_date
       }
     }
   }

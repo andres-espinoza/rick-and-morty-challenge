@@ -49,10 +49,6 @@ export interface GetAllDataSingleCharacter_character_episode {
    * The code of the episode.
    */
   episode: string | null;
-  /**
-   * The air date of the episode.
-   */
-  air_date: string | null;
 }
 
 export interface GetAllDataSingleCharacter_character {
