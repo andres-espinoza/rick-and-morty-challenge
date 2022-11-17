@@ -3,7 +3,7 @@ import { ApolloQueryResult } from '@apollo/client';
 const apolloErrorChecker = <T>(
   response: ApolloQueryResult<T>,
   serviceType: string
-): NonNullable<T> => {
+) => {
   if (response?.error) {
     console.error(`Error getting ${serviceType}: ${response.error?.message}`);
     throw Error(response.error.message);
