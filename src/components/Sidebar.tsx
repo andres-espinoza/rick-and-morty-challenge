@@ -58,7 +58,7 @@ const Sidebar = () => {
       }}
       onKeyDown={openSideBar(false)}
     >
-      <Typography variant="subtitle2">Módulos</Typography>
+      <Typography variant="subtitle2">Sections</Typography>
       <List role="menu">
         {navigationViews.map(({ viewName, icon, path }) => (
           <ListItem
