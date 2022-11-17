@@ -1,17 +1,20 @@
 interface RickAndMortyLogoProps {
   height?: number;
   normalColor?: boolean;
+  className?: string;
 }
 
 const RickAndMortyLogo = ({
   height = 36,
   normalColor = true,
+  className = '',
 }: RickAndMortyLogoProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={Math.round(height * 3.27)}
     height={height}
     viewBox="0 0 264.61 80.827"
+    className={className}
   >
     <path
       style={{
