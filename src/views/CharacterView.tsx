@@ -3,6 +3,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import CharacterCard from '../components/CharacterCard';
 import CustomInput from '../components/CustomInput';
 import CustomPagination from '../components/Pagination';
+import ProgressBar from '../components/ProgressBar';
 import CharacterService from '../services/characters';
 import { Character, CharactersPerPage } from '../services/characters/types';
 import { useAppSelector } from '../store';
@@ -15,7 +16,9 @@ interface DisplayCharacters extends CharactersPerPage {
 }
 
 const CharacterView = () => {
-  const { favorites } = useAppSelector((state) => state.character);
+  const {
+    favorites: { characters: favoriteCharacter },
+  } = useAppSelector((state) => state.favorite);
 
   const [loading, setLoading] = useState(false);
 
@@ -115,7 +118,7 @@ const CharacterView = () => {
         Character View
       </Typography>
       <CustomInput handleChange={handleSearchCharacter} />
-      {loading ? <h2>LOADING!</h2> : null}
+      <ProgressBar loading={loading} />
       <Box
         sx={{ width: '100%' }}
         marginTop={5}
@@ -142,17 +145,19 @@ const CharacterView = () => {
                     name={character?.name || 'broken'}
                     id={character?.id || 'broken'}
                     imageSource={character?.image || 'broken'}
-                    favorite={favorites.includes(character?.id || '-1')}
+                    favorite={favoriteCharacter.includes(character?.id || '-1')}
                   />
                 </Grid>
               ))
             : null}
         </Grid>
-        <CustomPagination
-          count={displayCharacters.totalAmountOfPages}
-          handleChange={handlePagination}
-          page={page}
-        />
+        {displayCharacters.selected.length > 0 ? (
+          <CustomPagination
+            count={displayCharacters.totalAmountOfPages}
+            handleChange={handlePagination}
+            page={page}
+          />
+        ) : null}
       </Box>
     </>
   );

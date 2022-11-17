@@ -1,15 +1,29 @@
-import { Card, CardContent, Stack, Typography } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  IconButton,
+  Stack,
+  Typography,
+} from '@mui/material';
+import { useAppDispatch } from '../store';
+import { setFavoriteEpisode } from '../store/slices/characterSlice';
 import episodeTextFormatter from '../utils/episodeTextFormatter';
+import { OutlinedFavoriteIcon, SolidFavoriteIcon } from './icons';
 
 interface EpisodeCardProps {
   episode: string | null;
   name: string | null;
   id: string | null;
+  favorite: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const EpisodeCard = ({ episode, name, id }: EpisodeCardProps) => {
+const EpisodeCard = ({ episode, name, id, favorite }: EpisodeCardProps) => {
+  const dispatch = useAppDispatch();
   if (!name || !id) return null;
+  const handleClick = () => {
+    dispatch(setFavoriteEpisode(id));
+  };
   return (
     <Card
       sx={{
@@ -27,6 +41,7 @@ const EpisodeCard = ({ episode, name, id }: EpisodeCardProps) => {
           justifyContent: 'center',
           alignItems: 'center',
           marginY: 'auto',
+          position: 'relative',
         }}
       >
         <Stack
@@ -60,6 +75,31 @@ const EpisodeCard = ({ episode, name, id }: EpisodeCardProps) => {
             {name}
           </Typography>
         </Stack>
+        <IconButton
+          aria-label="add to favorites"
+          onClick={handleClick}
+          sx={{
+            position: 'absolute',
+            bottom: '5px',
+            right: '5px',
+          }}
+        >
+          {favorite ? (
+            <SolidFavoriteIcon
+              color="primary"
+              sx={{
+                fontSize: 30,
+              }}
+            />
+          ) : (
+            <OutlinedFavoriteIcon
+              color="primary"
+              sx={{
+                fontSize: 30,
+              }}
+            />
+          )}
+        </IconButton>
       </CardContent>
     </Card>
   );

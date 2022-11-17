@@ -7,6 +7,8 @@ import getItemsUsingAppPagination from '../utils/getItemsUsingAppPagination';
 import EpisodeCard from '../components/EpisodeCard';
 import CustomPagination from '../components/Pagination';
 import CustomInput from '../components/CustomInput';
+import { useAppSelector } from '../store';
+import ProgressBar from '../components/ProgressBar';
 
 interface DisplayEpisodes extends EpisodesPerPage {
   userSearching: boolean;
@@ -14,6 +16,10 @@ interface DisplayEpisodes extends EpisodesPerPage {
 }
 
 const EpisodeView = () => {
+  const {
+    favorites: { episodes: favoriteEpisodes },
+  } = useAppSelector((state) => state.favorite);
+
   const [loading, setLoading] = useState(false);
 
   // Lógica de episodios mostrados
@@ -103,10 +109,9 @@ const EpisodeView = () => {
         Episode View
       </Typography>
       <CustomInput handleChange={handleSearchCharacter} />
-      {loading ? <h2>LOADING!</h2> : null}
+      <ProgressBar loading={loading} />
       <Box sx={{ width: '100%', marginTop: 5 }}>
         <Stack
-          // spacing={3}
           gap={3}
           flexDirection="row"
           justifyContent="center"
@@ -121,15 +126,18 @@ const EpisodeView = () => {
                   id={episode.id}
                   name={episode?.name}
                   episode={episode?.episode}
+                  favorite={favoriteEpisodes.includes(episode?.id || '-1')}
                 />
               ))
             : null}
         </Stack>
-        <CustomPagination
-          count={displayEpisodes.totalAmountOfPages}
-          handleChange={handlePagination}
-          page={page}
-        />
+        {displayEpisodes.selected.length > 0 ? (
+          <CustomPagination
+            count={displayEpisodes.totalAmountOfPages}
+            handleChange={handlePagination}
+            page={page}
+          />
+        ) : null}
       </Box>
     </>
   );
