@@ -78,6 +78,8 @@ const CharacterCard = ({
                   width: '100%',
                   height: 'auto',
                   aspectRatio: '1/1',
+                  borderEndEndRadius: '50%',
+                  borderEndStartRadius: '50%',
                 }}
               />
               <Box

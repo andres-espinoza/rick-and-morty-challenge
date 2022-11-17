@@ -102,11 +102,11 @@ const EpisodeView = () => {
   return (
     <>
       <Typography
-        variant="h2"
+        variant="h3"
         width="100%"
         textAlign="center"
       >
-        Episode View
+        Episode Section
       </Typography>
       <CustomInput handleChange={handleSearchCharacter} />
       <ProgressBar loading={loading} />

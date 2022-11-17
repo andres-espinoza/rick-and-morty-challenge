@@ -1,4 +1,5 @@
 import { Card, CardContent, Stack, Typography } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 import { useAppDispatch } from '../store';
 import { setFavoriteEpisode } from '../store/slices/characterSlice';
 import episodeTextFormatter from '../utils/episodeTextFormatter';
@@ -57,17 +58,19 @@ const EpisodeCard = ({ episode, name, id, favorite }: EpisodeCardProps) => {
               lg: '1rem',
             }}
           >{`${episodeTextFormatter(episode)}:`}</Typography>
-          <Typography
-            textAlign="center"
-            fontWeight={{ xs: 600, sm: 500, lg: 500 }}
-            fontSize={{
-              xs: '0.9rem',
-              sm: '1rem',
-              lg: '1.1rem',
-            }}
-          >
-            {name}
-          </Typography>
+          <RouterLink to={`/episodes/details/${id}`}>
+            <Typography
+              textAlign="center"
+              fontWeight={{ xs: 600, sm: 500, lg: 500 }}
+              fontSize={{
+                xs: '0.9rem',
+                sm: '1rem',
+                lg: '1.1rem',
+              }}
+            >
+              {name}
+            </Typography>
+          </RouterLink>
         </Stack>
         <FavoriteButton
           favorite={favorite}
