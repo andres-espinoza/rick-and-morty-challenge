@@ -21,6 +21,12 @@ import EpisodeService from '../services/episodes';
 import { BorderRadius } from '../theme';
 import episodeTextSplitter from '../utils/episodeTextSplitter';
 import Loader from '../components/Loader';
+import NoResults from '../components/NoResults';
+import { Fetch } from '../types/fetch';
+
+interface FullEpisodeView extends FullEpisode {
+  fetch: Fetch;
+}
 
 export const EpisodeDetails = () => {
   const { episodeId } = useParams();
@@ -29,31 +35,49 @@ export const EpisodeDetails = () => {
   const handleClickFavorite = () => {
     if (episodeId) dispatch(setFavoriteEpisode(episodeId));
   };
+
   const {
     favorites: { episodes: favCharacters },
   } = useAppSelector((state) => state.favorite);
-  const [fullEpisode, setFullEpisode] = useState<FullEpisode>({
+  const [fullEpisode, setFullEpisode] = useState<FullEpisodeView>({
     name: null,
     air_date: null,
     characters: [],
     episode: null,
+    fetch: 'init',
   });
   const { palette } = useTheme();
 
   useEffect(() => {
-    if (!episodeId) return;
-    setLoading(true);
-    EpisodeService.GetAllDataSingleEpisodeById(episodeId)
-      .then((episode) => {
-        setFullEpisode({
-          ...episode,
-        });
-      })
-      .catch((error) => console.error(error))
-      .finally(() => setLoading(false));
+    if (episodeId) {
+      setLoading(true);
+      EpisodeService.GetAllDataSingleEpisodeById(episodeId)
+        .then((episode) => {
+          if (episode?.name === null) {
+            setFullEpisode({
+              fetch: 'noData',
+              ...episode,
+            });
+          } else {
+            setFullEpisode({
+              fetch: 'data',
+              ...episode,
+            });
+          }
+        })
+        .catch((error) => {
+          setFullEpisode((prevState) => ({
+            ...prevState,
+            fetch: 'noData',
+          }));
+          console.error(error);
+        })
+        .finally(() => setLoading(false));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   if (loading) return <Loader />;
+  if (fullEpisode.fetch === 'noData') return <NoResults goBackOption />;
   return (
     <Card
       sx={{

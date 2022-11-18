@@ -9,6 +9,7 @@ import CustomPagination from '../components/Pagination';
 import CustomInput from '../components/CustomInput';
 import { useAppSelector } from '../store';
 import ProgressBar from '../components/ProgressBar';
+import NoResults from '../components/NoResults';
 
 interface DisplayEpisodes extends EpisodesPerPage {
   userSearching: boolean;
@@ -109,6 +110,7 @@ const EpisodeView = () => {
         Episode Section
       </Typography>
       <CustomInput handleChange={handleSearchCharacter} />
+      {!displayEpisodes.selected[0] && !loading && <NoResults />}
       <ProgressBar loading={loading} />
       <Box sx={{ width: '100%', marginTop: 5 }}>
         <Stack

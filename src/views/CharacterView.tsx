@@ -2,6 +2,7 @@ import { Box, Grid, Typography } from '@mui/material';
 import { ChangeEvent, useEffect, useState } from 'react';
 import CharacterCard from '../components/CharacterCard';
 import CustomInput from '../components/CustomInput';
+import NoResults from '../components/NoResults';
 import CustomPagination from '../components/Pagination';
 import ProgressBar from '../components/ProgressBar';
 import CharacterService from '../services/characters';
@@ -93,7 +94,6 @@ const CharacterView = () => {
         console.error(error?.message)
       );
       setLoading(false);
-
       // El usuario si tiene algo escrito en el input, por ende busco la data por la paginación de la aplicación
     } else {
       setDisplayCharacters((prevState) => ({
@@ -107,7 +107,6 @@ const CharacterView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, displayCharacters.userSearching]);
 
-  // if (loading) return <CircularProgress />;
   return (
     <>
       <Typography
@@ -119,6 +118,7 @@ const CharacterView = () => {
       </Typography>
       <CustomInput handleChange={handleSearchCharacter} />
       <ProgressBar loading={loading} />
+      {!displayCharacters.selected[0] && !loading && <NoResults />}
       <Box
         sx={{ width: '100%' }}
         marginTop={5}

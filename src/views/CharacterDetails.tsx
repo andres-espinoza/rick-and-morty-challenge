@@ -15,12 +15,18 @@ import { useParams, Link as RouterLink } from 'react-router-dom';
 import FavoriteButton from '../components/FavoriteButton';
 import { ExpandIcon } from '../components/icons';
 import Loader from '../components/Loader';
+import NoResults from '../components/NoResults';
 import CharacterService from '../services/characters';
 import { FullCharacter } from '../services/characters/types';
 import { useAppDispatch, useAppSelector } from '../store';
 import { setFavoriteCharacter } from '../store/slices/characterSlice';
 import { BorderRadius } from '../theme';
+import { Fetch } from '../types/fetch';
 import episodeTextFormatter from '../utils/episodeTextFormatter';
+
+interface FullCharacterView extends FullCharacter {
+  fetch: Fetch;
+}
 
 const CharacterDetails = () => {
   const { characterId } = useParams();
@@ -32,7 +38,7 @@ const CharacterDetails = () => {
   const {
     favorites: { characters: favCharacters },
   } = useAppSelector((state) => state.favorite);
-  const [fullCharacter, setFullCharacter] = useState<FullCharacter>({
+  const [fullCharacter, setFullCharacter] = useState<FullCharacterView>({
     name: null,
     image: null,
     episode: [],
@@ -42,6 +48,7 @@ const CharacterDetails = () => {
     species: null,
     status: null,
     type: null,
+    fetch: 'init',
   });
 
   const { palette } = useTheme();
@@ -51,15 +58,30 @@ const CharacterDetails = () => {
     setLoading(true);
     CharacterService.GetAllDataSingleCharacterById(characterId)
       .then((character) => {
-        setFullCharacter({
-          ...character,
-        });
+        if (character?.name) {
+          setFullCharacter({
+            fetch: 'noData',
+            ...character,
+          });
+        } else {
+          setFullCharacter({
+            fetch: 'data',
+            ...character,
+          });
+        }
       })
-      .catch((error) => console.error(error))
+      .catch((error) => {
+        setFullCharacter((prevState) => ({
+          ...prevState,
+          fetch: 'noData',
+        }));
+        console.error(error);
+      })
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   if (loading) return <Loader />;
+  if (fullCharacter.fetch === 'noData') return <NoResults goBackOption />;
   return (
     <Card
       sx={{
@@ -178,7 +200,6 @@ const CharacterDetails = () => {
                     xs: 500,
                     lg: 500,
                   }}
-                  // color={palette.secondary.contrastText}
                 >
                   {fullCharacter.name ? fullCharacter.name : 'Unknown'}
                 </Typography>
@@ -204,7 +225,6 @@ const CharacterDetails = () => {
                     xs: 500,
                     lg: 500,
                   }}
-                  // color={palette.secondary.contrastText}
                 >
                   {fullCharacter.species ? fullCharacter.species : 'Unknown'}
                 </Typography>

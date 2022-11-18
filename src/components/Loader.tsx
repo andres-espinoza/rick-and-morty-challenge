@@ -15,7 +15,12 @@ const Loader = () => {
         flexDirection="column"
         gap={4}
       >
-        <Typography variant="h4">Loading</Typography>
+        <Typography
+          variant="h4"
+          textAlign="center"
+        >
+          Loading
+        </Typography>
         <CircularProgress size={200} />
       </Stack>
     </Container>
