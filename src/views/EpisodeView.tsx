@@ -10,10 +10,12 @@ import CustomInput from '../components/CustomInput';
 import { useAppSelector } from '../store';
 import ProgressBar from '../components/ProgressBar';
 import NoResults from '../components/NoResults';
+import { Fetch } from '../types/fetch';
 
 interface DisplayEpisodes extends EpisodesPerPage {
   userSearching: boolean;
   selected: EpisodesPerPage['episodes'];
+  fetch: Fetch;
 }
 
 const EpisodeView = () => {
@@ -29,6 +31,7 @@ const EpisodeView = () => {
     selected: [],
     totalAmountOfPages: 0,
     userSearching: false,
+    fetch: 'init',
   });
 
   const [page, setPage] = useState(1);
@@ -57,15 +60,21 @@ const EpisodeView = () => {
               page,
               matchingEpisodes.episodes
             ),
+            fetch: 'data',
           }));
         } else {
           setDisplayEpisodes((prevState) => ({
             ...prevState,
             userSearching: false,
+            fetch: 'data',
           }));
           setPage(1);
         }
       } catch (error) {
+        setDisplayEpisodes((prevState) => ({
+          ...prevState,
+          fetch: 'noData',
+        }));
         console.error(error);
       }
       setLoading(false);
@@ -78,6 +87,7 @@ const EpisodeView = () => {
       ...prevState,
       ...episodesToDisplay,
       selected: episodesToDisplay.episodes,
+      fetch: 'data',
     }));
   };
 
@@ -85,9 +95,13 @@ const EpisodeView = () => {
     // El usuario no tiene nada escrito en el input, por ende busco la data usando la paginación de la API
     if (!displayEpisodes.userSearching) {
       setLoading(true);
-      getEpisodesUsingApiPagination().catch((error: Error) =>
-        console.error(error?.message)
-      );
+      getEpisodesUsingApiPagination().catch((error: Error) => {
+        setDisplayEpisodes((prevState) => ({
+          ...prevState,
+          fetch: 'noData',
+        }));
+        console.error(error?.message);
+      });
       setLoading(false);
 
       // El usuario si tiene algo escrito en el input, por ende busco la data por la paginación de la aplicación
@@ -95,6 +109,7 @@ const EpisodeView = () => {
       setDisplayEpisodes((prevState) => ({
         ...prevState,
         selected: getItemsUsingAppPagination<Episode>(page, prevState.episodes),
+        fetch: 'data',
       }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -110,8 +125,8 @@ const EpisodeView = () => {
         Episode Section
       </Typography>
       <CustomInput handleChange={handleSearchCharacter} />
-      {!displayEpisodes.selected[0] && !loading && <NoResults />}
       <ProgressBar loading={loading} />
+      {displayEpisodes.fetch === 'noData' && !loading && <NoResults />}
       <Box sx={{ width: '100%', marginTop: 5 }}>
         <Stack
           gap={3}
@@ -121,7 +136,8 @@ const EpisodeView = () => {
           alignContent="center"
           flexWrap="wrap"
         >
-          {displayEpisodes.selected.length > 0
+          {displayEpisodes.selected.length > 0 &&
+          displayEpisodes.fetch === 'data'
             ? displayEpisodes.selected.map((episode) => (
                 <EpisodeCard
                   key={episode.id}
@@ -133,7 +149,8 @@ const EpisodeView = () => {
               ))
             : null}
         </Stack>
-        {displayEpisodes.selected.length > 0 ? (
+        {displayEpisodes.selected.length > 0 &&
+        displayEpisodes.fetch === 'data' ? (
           <CustomPagination
             count={displayEpisodes.totalAmountOfPages}
             handleChange={handlePagination}

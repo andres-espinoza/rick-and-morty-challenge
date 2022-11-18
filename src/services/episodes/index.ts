@@ -68,7 +68,11 @@ class EpisodeService {
         'characters'
       );
 
-      if (!data?.episodes?.info || !data?.episodes?.results) {
+      if (
+        !data?.episodes?.info ||
+        !data?.episodes?.results ||
+        data.episodes.results.length < 1
+      ) {
         throw new Error(
           `There is no data of episodes requesting by name: ${name}`
         );

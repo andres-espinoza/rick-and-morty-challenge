@@ -71,7 +71,11 @@ class CharacterService {
         'characters'
       );
 
-      if (!data?.characters?.info || !data?.characters?.results) {
+      if (
+        !data?.characters?.info ||
+        !data?.characters?.results ||
+        data.characters.results.length < 1
+      ) {
         throw new Error(
           `There is no data of characters requesting by name: ${name}`
         );

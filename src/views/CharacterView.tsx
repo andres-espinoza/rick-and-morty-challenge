@@ -8,12 +8,14 @@ import ProgressBar from '../components/ProgressBar';
 import CharacterService from '../services/characters';
 import { Character, CharactersPerPage } from '../services/characters/types';
 import { useAppSelector } from '../store';
+import { Fetch } from '../types/fetch';
 import getItemsUsingAppPagination from '../utils/getItemsUsingAppPagination';
 import handleChangePage from '../utils/handleChangePage';
 
 interface DisplayCharacters extends CharactersPerPage {
   userSearching: boolean;
   selected: CharactersPerPage['characters'];
+  fetch: Fetch;
 }
 
 const CharacterView = () => {
@@ -30,6 +32,7 @@ const CharacterView = () => {
       selected: [],
       totalAmountOfPages: 0,
       userSearching: false,
+      fetch: 'init',
     }
   );
 
@@ -56,6 +59,7 @@ const CharacterView = () => {
           setDisplayCharacters((prevState) => ({
             ...prevState,
             ...matchingCharacters,
+            fetch: 'data',
             selected: getItemsUsingAppPagination<Character>(
               page,
               matchingCharacters.characters
@@ -65,10 +69,15 @@ const CharacterView = () => {
           setDisplayCharacters((prevState) => ({
             ...prevState,
             userSearching: false,
+            fetch: 'data',
           }));
           setPage(1);
         }
       } catch (error) {
+        setDisplayCharacters((prevState) => ({
+          ...prevState,
+          fetch: 'noData',
+        }));
         console.error(error);
       }
       setLoading(false);
@@ -76,23 +85,35 @@ const CharacterView = () => {
   };
 
   const getCharactersUsingApiPagination = async () => {
-    const charactersToDisplay = await CharacterService.getCharactersByPage(
-      page
-    );
-    setDisplayCharacters((prevState) => ({
-      ...prevState,
-      ...charactersToDisplay,
-      selected: charactersToDisplay.characters,
-    }));
+    try {
+      const charactersToDisplay = await CharacterService.getCharactersByPage(
+        page
+      );
+      setDisplayCharacters((prevState) => ({
+        ...prevState,
+        ...charactersToDisplay,
+        selected: charactersToDisplay.characters,
+        fetch: 'data',
+      }));
+    } catch (error) {
+      setDisplayCharacters((prevState) => ({
+        ...prevState,
+        fetch: 'noData',
+      }));
+    }
   };
 
   useEffect(() => {
     // El usuario no tiene nada escrito en el input, por ende busco la data usando la paginación de la API
     if (!displayCharacters.userSearching) {
       setLoading(true);
-      getCharactersUsingApiPagination().catch((error: Error) =>
-        console.error(error?.message)
-      );
+      getCharactersUsingApiPagination().catch((error: Error) => {
+        setDisplayCharacters((prevState) => ({
+          ...prevState,
+          fetch: 'noData',
+        }));
+        console.error(error?.message);
+      });
       setLoading(false);
       // El usuario si tiene algo escrito en el input, por ende busco la data por la paginación de la aplicación
     } else {
@@ -118,7 +139,7 @@ const CharacterView = () => {
       </Typography>
       <CustomInput handleChange={handleSearchCharacter} />
       <ProgressBar loading={loading} />
-      {!displayCharacters.selected[0] && !loading && <NoResults />}
+      {displayCharacters.fetch === 'noData' && !loading && <NoResults />}
       <Box
         sx={{ width: '100%' }}
         marginTop={5}
@@ -127,7 +148,8 @@ const CharacterView = () => {
           container
           rowSpacing={4}
         >
-          {displayCharacters.selected.length > 0
+          {displayCharacters.selected.length > 0 &&
+          displayCharacters.fetch === 'data'
             ? displayCharacters.selected.map((character) => (
                 <Grid
                   item
@@ -151,7 +173,8 @@ const CharacterView = () => {
               ))
             : null}
         </Grid>
-        {displayCharacters.selected.length > 0 ? (
+        {displayCharacters.selected.length > 0 &&
+        displayCharacters.fetch === 'data' ? (
           <CustomPagination
             count={displayCharacters.totalAmountOfPages}
             handleChange={handlePagination}

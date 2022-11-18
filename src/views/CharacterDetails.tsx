@@ -58,7 +58,7 @@ const CharacterDetails = () => {
     setLoading(true);
     CharacterService.GetAllDataSingleCharacterById(characterId)
       .then((character) => {
-        if (character?.name) {
+        if (!character?.name) {
           setFullCharacter({
             fetch: 'noData',
             ...character,
