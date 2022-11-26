@@ -25,11 +25,17 @@ The main goal was **developed a functional app in 7 days** as a challenge to del
 ### App Features ✨
 
 🔢 Pagination.
+
 ❔ Custom 404 page.
+
 🏃‍♂️ Dynamic routing.
+
 💤 Lazy load of views.
+
 🔎 Debounce input search.
+
 📱 Responsive layout (desktop, tablet and mobile).
+
 ⭐ Saving characters and episodes as favorites using localStorage with Redux Toolkit (data persistence).
 
 ### Conclusions 🧙‍♂️
